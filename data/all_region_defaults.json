@@ -1,0 +1,14 @@
+{
+    "receive_delay1": 1,
+    "receive_delay2": 2,
+    "join_accept_delay1": 5,
+    "join_accept_delay2": 6,
+    "max_fcnt_gap": 16384,
+    "adr_ack_limit": 64,
+    "adr_ack_delay": 32,
+    "retransmit_timeout": 2,
+    "downlink_dwell_time": 0,
+    "ping_slot_periodicity": 7,
+    "class_b_resp_timeout": 8,
+    "class_c_resp_timeout": 8
+}
