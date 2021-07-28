@@ -1,0 +1,233 @@
+{
+    "region": "US915",
+    "ism_id": "US902-928",
+    "supported_bw": [
+        "BW_125KHZ", 
+        "BW_500KHZ"
+    ],
+    "join_req_data_rate": {
+        "BW_125KHZ": "DR0",
+        "BW_500KHZ": "DR4"
+    },
+    "cflist_type_supported": 1,
+    "mandatory_data_rate": [
+        "DR0", "DR1", "DR2", "DR3", "DR4",
+        "DR8", "DR9", "DR10", "DR11", "DR12", "DR13"
+    ],
+    "optional_data_rate": [
+        "DR5", "DR6"
+    ],
+    "txparamsetupreq_support": false,
+    "max_eirp": 30,
+    "default_rx1droffset": 0,
+    "allowed_rx1droffset": [
+        0, 1, 2, 3
+    ],
+    "default_rx2_data_rate": "DR8",
+    "default_rx2_frequency": 923300000,
+    "duty_cycle": false,
+    "dwell_time": 0.400,
+    "coding_rate": "CR_4_5",
+    "data_rates": {
+        "DR0": {
+            "type": "lora",
+            "spreading_factor": "SF10",
+            "bandwidth": "BW_125KHZ",
+            "bit_rate": 980,
+            "dr_next": "NA",
+            "max_m_payload": 19,
+            "max_n_payload": 11
+        },
+        "DR1": {
+            "type": "lora",
+            "spreading_factor": "SF9",
+            "bandwidth": "BW_125KHZ",
+            "bit_rate": 1760,
+            "dr_next": "DR0",
+            "max_m_payload": 61,
+            "max_n_payload": 53
+        },
+        "DR2": {
+            "type": "lora",
+            "spreading_factor": "SF8",
+            "bandwidth": "BW_125KHZ",
+            "bit_rate": 3125,
+            "dr_next": "DR1",
+            "max_m_payload": 133,
+            "max_n_payload": 125
+        },
+        "DR3": {
+            "type": "lora",
+            "spreading_factor": "SF7",
+            "bandwidth": "BW_125KHZ",
+            "bit_rate": 5470,
+            "dr_next": "DR2",
+            "max_m_payload": 230,
+            "max_n_payload": 222
+        },
+        "DR4": {
+            "type": "lora",
+            "spreading_factor": "SF8",
+            "bandwidth": "BW_500KHZ",
+            "bit_rate": 12500,
+            "dr_next": "DR3",
+            "max_m_payload": 230,
+            "max_n_payload": 222
+        },
+        "DR5": {
+            "type": "lr-fhss",
+            "bit_rate": 162,
+            "dr_next": "DR0",
+            "max_m_payload": 58,
+            "max_n_payload": 50
+        },
+        "DR6": {
+            "type": "lr-fhss",
+            "bit_rate": 325,
+            "dr_next": "DR5",
+            "max_m_payload": 133,
+            "max_n_payload": 125
+        },
+        "DR7": {
+            "type": "rfu",
+            "dr_next": "NA",
+            "max_m_payload": -1,
+            "max_n_payload": -1
+        },
+        "DR8": {
+            "type": "lora",
+            "spreading_factor": "SF12",
+            "bandwidth": "BW_500KHZ",
+            "bit_rate": 980,
+            "dr_next": "NA",
+            "max_m_payload": 61,
+            "max_n_payload": 53
+        },
+        "DR9": {
+            "type": "lora",
+            "spreading_factor": "SF11",
+            "bandwidth": "BW_500KHZ",
+            "bit_rate": 1760,
+            "dr_next": "NA",
+            "max_m_payload": 137,
+            "max_n_payload": 129
+        },
+        "DR10": {
+            "type": "lora",
+            "spreading_factor": "SF10",
+            "bandwidth": "BW_500KHZ",
+            "bit_rate": 3900,
+            "dr_next": "NA",
+            "max_m_payload": 230,
+            "max_n_payload": 222
+        },
+        "DR11": {
+            "type": "lora",
+            "spreading_factor": "SF9",
+            "bandwidth": "BW_500KHZ",
+            "bit_rate": 7000,
+            "dr_next": "NA",
+            "max_m_payload": 230,
+            "max_n_payload": 222
+        },
+        "DR12": {
+            "type": "lora",
+            "spreading_factor": "SF8",
+            "bandwidth": "BW_500KHZ",
+            "bit_rate": 12500,
+            "dr_next": "NA",
+            "max_m_payload": 230,
+            "max_n_payload": 222
+        },
+        "DR13": {
+            "type": "lora",
+            "spreading_factor": "SF7",
+            "bandwidth": "BW_500KHZ",
+            "bit_rate": 21900,
+            "dr_next": "NA",
+            "max_m_payload": 230,
+            "max_n_payload": 222
+        },
+        "DR14": {
+            "type": "rfu",
+            "dr_next": "NA",
+            "max_m_payload": -1,
+            "max_n_payload": -1
+        },
+        "DR15": {
+            "type": "rfu",
+            "dr_next": "NA",
+            "max_m_payload": -1,
+            "max_n_payload": -1
+        }
+    },
+    "tx_power": {
+        "TXPOWER0": 30,
+        "TXPOWER1": 28,
+        "TXPOWER2": 26,
+        "TXPOWER3": 24,
+        "TXPOWER4": 22,
+        "TXPOWER5": 20,
+        "TXPOWER6": 18,
+        "TXPOWER7": 16,
+        "TXPOWER8": 14,
+        "TXPOWER9": 12,
+        "TXPOWER10": 10,
+        "TXPOWER11": 8,
+        "TXPOWER12": 6,
+        "TXPOWER13": 4,
+        "TXPOWER14": 2,
+        "TXPOWER15": -1
+    },
+    "channel_mask_cntl": {
+        "CNTL0": {
+            "type": "individual",
+            "min": 0,
+            "max": 15
+        },
+        "CNTL1": {
+            "type": "individual",
+            "min": 16,
+            "max": 31
+        },
+        "CNTL2": {
+            "type": "individual",
+            "min": 32,
+            "max": 47
+        },
+        "CNTL3": {
+            "type": "individual",
+            "min": 48,
+            "max": 63
+        },
+        "CNTL4": {
+            "type": "individual",
+            "min": 64,
+            "max": 71
+        },
+        "CNTL5": {
+            "type": "block",
+            "min": 0,
+            "max": 7
+        },
+        "CNTL6": {
+            "type": "all_on",
+            "min": 64,
+            "max": 71
+        },
+        "CNTL7": {
+            "type": "all_off",
+            "min": 64,
+            "max": 71
+        }
+    },
+    "rx1droffset": {
+        "DR0": ["DR10", "DR9", "DR8", "DR8"],
+        "DR1": ["DR11", "DR10", "DR9", "DR8"],
+        "DR2": ["DR12", "DR11", "DR10", "DR9"],
+        "DR3": ["DR13", "DR12", "DR11", "DR10"],
+        "DR4": ["DR13", "DR13", "DR12", "DR11"],
+        "DR5": ["DR10", "DR9", "DR8", "DR8"],
+        "DR6": ["DR11", "DR10", "DR9", "DR8"]
+    }
+}
