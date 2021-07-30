@@ -75,14 +75,14 @@
             "max_n_payload": 222
         },
         "DR5": {
-            "type": "lr-fhss",
+            "type": "lrfhss",
             "bit_rate": 162,
             "dr_next": "DR0",
             "max_m_payload": 58,
             "max_n_payload": 50
         },
         "DR6": {
-            "type": "lr-fhss",
+            "type": "lrfhss",
             "bit_rate": 325,
             "dr_next": "DR5",
             "max_m_payload": 133,
