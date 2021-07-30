@@ -6,7 +6,6 @@ from constants import (
     BW,
     SF,
     CR,
-    POWERMODE,
     DEVCLASS,
     ACTIVATION,
     TXPOWER,
@@ -25,13 +24,7 @@ class LoRaMAC:
         region=REGION.US915,
         frequency=None,
         tx_power=None,
-        bandwidth=None,
-        sf=None,
-        preamble=None,
-        coding_rate=None,
         power_mode=None,
-        tx_iq=None,
-        rx_iq=None,
         adr=False,
         public=False,
         tx_retries=2,
@@ -42,7 +35,7 @@ class LoRaMAC:
         self.__frequency = None
         self.__tx_power = None
         self.__bandwidth = None
-        self.__sf = None
+        self.__spreading_factor = None
         self.__preamble = None
         self.__coding_rate = None
         self.__power_mode = None
@@ -115,7 +108,7 @@ class LoRaMAC:
         self.adr_ack_delay = json_data[KEYS.ADR_ACK_DELAY.value]
         self.retransmit_timeout = json_data[KEYS.RETRANSMIT_TIMEOUT.value]
         self.downlink_dwell_time = json_data[KEYS.DOWNLINK_DWELL_TIME.value]
-        self.ping_slot_periodicity = json_data[KEYS.PING_SLOT_PERIODICITY.value]
+        self.ping_slot_periodicity = json_data[KEYS.PING_SLOT_PERIODICITY.value]    # noqa: E501
         self.class_b_resp_timeout = json_data[KEYS.CLASS_B_RESP_TIMEOUT.value]
         self.class_c_resp_timeout = json_data[KEYS.CLASS_C_RESP_TIMEOUT.value]
 
@@ -123,19 +116,19 @@ class LoRaMAC:
         self.ism_id = json_data[KEYS.ISM_ID.value]
         self.supported_bw = json_data[KEYS.SUPPORTED_BW.value]
         self.join_request_data_rate = json_data[KEYS.JOIN_REQ_DATA_RATE.value]
-        self.cflist_type_supported = json_data[KEYS.CFLIST_TYPE_SUPPORTED.value]
+        self.cflist_type_supported = json_data[KEYS.CFLIST_TYPE_SUPPORTED.value]    # noqa: E501
         self.mandatory_data_rate = json_data[KEYS.MANDATORY_DATA_RATE.value]
         self.optional_data_rate = json_data[KEYS.OPTIONAL_DATA_RATE.value]
-        self.txparamsetupreq_support = json_data[KEYS.TXPARAMSETUPREQ_SUPPORT.value]
+        self.txparamsetupreq_support = json_data[KEYS.TXPARAMSETUPREQ_SUPPORT.value]    # noqa: E501
         self.max_eirp = json_data[KEYS.MAX_EIRP.value]
-        self.default_rx2_data_rate = json_data[KEYS.DEFAULT_RX2_DATA_RATE.value]
-        self.default_rx2_frequency = json_data[KEYS.DEFAULT_RX2_FREQUENCY.value]
+        self.default_rx2_data_rate = json_data[KEYS.DEFAULT_RX2_DATA_RATE.value]    # noqa: E501
+        self.default_rx2_frequency = json_data[KEYS.DEFAULT_RX2_FREQUENCY.value]    # noqa: E501
         self.duty_cycle = json_data[KEYS.DUTY_CYCLE.value]
         self.dwell_time = json_data[KEYS.DWELL_TIME.value]
         self.coding_rate = json_data[KEYS.CODING_RATE.value]
         self.data_rates = json_data[KEYS.DATA_RATES.value]
         self.tx_power = json_data[KEYS.TX_POWER.value]
-        self.channel_mast_cntl = json_data[KEYS.CHANNEL_MASK_CNTL.value]
+        self.channel_mask_cntl = json_data[KEYS.CHANNEL_MASK_CNTL.value]
         self.rx1droffset = json_data[KEYS.RX1DROFFSET.value]
 
     ###########################################################################
@@ -193,6 +186,39 @@ class LoRaMAC:
     def device_class(self, device_class: DEVCLASS):
         if isinstance(device_class, DEVCLASS):
             self.__device_class = device_class
+        else:
+            raise TypeError
+
+    @property
+    def activation(self) -> ACTIVATION:
+        return self.__activation
+
+    @activation.setter
+    def activation(self, activation):
+        if isinstance(activation, ACTIVATION):
+            self.__activation = activation
+        else:
+            raise TypeError
+
+    @property
+    def spreading_factor(self) -> SF:
+        return self.__spreading_factor
+
+    @spreading_factor.setter
+    def spreading_factor(self, spreading_factor):
+        if isinstance(spreading_factor, SF):
+            self.__spreading_factor = spreading_factor
+        else:
+            raise TypeError
+
+    @property
+    def bandwidth(self) -> BW:
+        return self.__bandwidth
+
+    @bandwidth.setter
+    def bandwidth(self, bandwidth):
+        if isinstance(bandwidth, BW):
+            self.__bandwidth = bandwidth
         else:
             raise TypeError
 
@@ -363,9 +389,9 @@ class LoRaMAC:
             if self.__join_request_data_rate is None:
                 self.__join_request_data_rate = {}
                 for bw, dr in join_request_data_rate.items():
-                    self.__join_request_data_rate[get_enum(BW, bw)] = get_enum(DR, dr)
+                    self.__join_request_data_rate[get_enum(BW, bw)] = get_enum(DR, dr)  # noqa: E501
             else:
-                raise ValueError(f"{self}.join_request_data_rate already exists!")
+                raise ValueError(f"{self}.join_request_data_rate already exists!")  # noqa: E501
         else:
             raise TypeError
 
@@ -390,7 +416,7 @@ class LoRaMAC:
             if self.__mandatory_data_rate is None:
                 self.__mandatory_data_rate = []
             else:
-                raise ValueError(f"{self}.manadatory_data_rate already exists!")
+                raise ValueError(f"{self}.manadatory_data_rate already exists!")    # noqa: E501
             for dr in mandatory_data_rate:
                 self.__mandatory_data_rate.append(get_enum(DR, dr))
 
@@ -563,7 +589,7 @@ class LoRaMAC:
                 self.__channel_mask_cntl = {}
                 for key, value in channel_mask_cntl.items():
                     cntl = get_enum(CHMASK, key)
-                    self.__channel_mask_cntl[cntl] = ChannelMaskCntl(cntl, value)
+                    self.__channel_mask_cntl[cntl] = ChannelMaskCntl(cntl, value)   # noqa: E501
             else:
                 raise ValueError(f"{self}.channel_mask_cntl is not empty!")
         else:
