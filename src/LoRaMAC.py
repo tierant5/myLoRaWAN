@@ -587,7 +587,7 @@ class LoRaMAC:
                 self.__channel_mask_cntl = {}
                 for key, value in channel_mask_cntl.items():
                     cntl = get_enum(CHMASK, key)
-                    self.__channel_mask_cntl[cntl] = ChannelMaskCntl(cntl, value)   # noqa: E501
+                    self.__channel_mask_cntl[cntl] = ChannelMaskCntl(cntl, **value)   # noqa: E501
             else:
                 raise ValueError(f"{self}.channel_mask_cntl is not empty!")
         else:

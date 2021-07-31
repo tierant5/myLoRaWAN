@@ -4,7 +4,7 @@ from constants import KEYS, CHMASK, UPLINK, DR, BW, BAND, get_enum
 class ChannelMaskCntl(object):
     """Class to define LoRaWAN Channel Mask Control Type"""
 
-    def __init__(self, cntl: CHMASK, params: dict):
+    def __init__(self, cntl: CHMASK, **kwargs):
         self.__cntl = None
         self.__cntl_type = None
         self.__min_channel = None
@@ -15,7 +15,7 @@ class ChannelMaskCntl(object):
         self.__band_list = None
 
         self.cntl = cntl
-        for key, value in params.items():
+        for key, value in kwargs.items():
             if key == KEYS.CHMASK_TYPE.value:
                 self.cntl_type = value
             elif key == KEYS.CHMASK_MIN_CH.value:
