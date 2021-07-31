@@ -182,43 +182,43 @@
     "channel_mask_cntl": {
         "CNTL0": {
             "type": "individual",
-            "min": 0,
-            "max": 15
+            "min_channel": "CH0",
+            "max_channel": "CH15"
         },
         "CNTL1": {
             "type": "individual",
-            "min": 16,
-            "max": 31
+            "min_channel": "CH16",
+            "max_channel": "CH31"
         },
         "CNTL2": {
             "type": "individual",
-            "min": 32,
-            "max": 47
+            "min_channel": "CH32",
+            "max_channel": "CH47"
         },
         "CNTL3": {
             "type": "individual",
-            "min": 48,
-            "max": 63
+            "min_channel": "CH48",
+            "max_channel": "CH63"
         },
         "CNTL4": {
             "type": "individual",
-            "min": 64,
-            "max": 71
+            "min_channel": "CH64",
+            "max_channel": "CH71"
         },
         "CNTL5": {
-            "type": "block",
-            "min": 0,
-            "max": 7
+            "type": "band",
+            "min_band": "BAND0",
+            "max_band": "BAND7"
         },
         "CNTL6": {
             "type": "all_on",
-            "min": 64,
-            "max": 71
+            "min_channel": "CH64",
+            "max_channel": "CH71"
         },
         "CNTL7": {
             "type": "all_off",
-            "min": 64,
-            "max": 71
+            "min_channel": "CH64",
+            "max_channel": "CH71"
         }
     },
     "rx1droffset": {
@@ -229,5 +229,523 @@
         "DR4": ["DR13", "DR13", "DR12", "DR11"],
         "DR5": ["DR10", "DR9", "DR8", "DR8"],
         "DR6": ["DR11", "DR10", "DR9", "DR8"]
+    },
+    "uplink_channels": {
+        "CH0": {
+            "frequency": 902300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH1": {
+            "frequency": 902500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH2": {
+            "frequency": 902700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH3": {
+            "frequency": 902900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH4": {
+            "frequency": 903100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH5": {
+            "frequency": 903300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH6": {
+            "frequency": 903500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH7": {
+            "frequency": 903700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH8": {
+            "frequency": 903900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH9": {
+            "frequency": 904100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH10": {
+            "frequency": 904300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH11": {
+            "frequency": 904500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH12": {
+            "frequency": 904700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH13": {
+            "frequency": 904900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH14": {
+            "frequency": 905100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH15": {
+            "frequency": 905300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH16": {
+            "frequency": 905500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH17": {
+            "frequency": 905700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH18": {
+            "frequency": 905900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH19": {
+            "frequency": 906100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH20": {
+            "frequency": 906300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH21": {
+            "frequency": 906500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH22": {
+            "frequency": 906700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH23": {
+            "frequency": 906900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH24": {
+            "frequency": 907100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH25": {
+            "frequency": 907300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH26": {
+            "frequency": 907500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH27": {
+            "frequency": 907700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH28": {
+            "frequency": 907900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH29": {
+            "frequency": 908100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH30": {
+            "frequency": 908300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH31": {
+            "frequency": 908500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH32": {
+            "frequency": 908700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH33": {
+            "frequency": 908900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH34": {
+            "frequency": 909100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH35": {
+            "frequency": 909300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH36": {
+            "frequency": 909500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH37": {
+            "frequency": 909700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH38": {
+            "frequency": 909900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH39": {
+            "frequency": 910100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH40": {
+            "frequency": 910300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH41": {
+            "frequency": 910500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH42": {
+            "frequency": 910700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH43": {
+            "frequency": 910900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH44": {
+            "frequency": 911100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH45": {
+            "frequency": 911300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH46": {
+            "frequency": 911500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH47": {
+            "frequency": 911700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH48": {
+            "frequency": 911900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH49": {
+            "frequency": 912100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH50": {
+            "frequency": 912300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH51": {
+            "frequency": 912500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH52": {
+            "frequency": 912700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH53": {
+            "frequency": 912900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH54": {
+            "frequency": 913100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH55": {
+            "frequency": 913300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH56": {
+            "frequency": 913500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH57": {
+            "frequency": 913700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH58": {
+            "frequency": 913900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH59": {
+            "frequency": 914100000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH60": {
+            "frequency": 914300000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH61": {
+            "frequency": 914500000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH62": {
+            "frequency": 914700000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH63": {
+            "frequency": 914900000,
+            "min_data_rate": "DR0",
+            "max_data_rate": "DR3",
+            "bandwidth": "BW_125KHZ"
+        },
+        "CH64": {
+            "frequency": 903000000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH65": {
+            "frequency": 904600000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH66": {
+            "frequency": 906200000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH67": {
+            "frequency": 907800000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH68": {
+            "frequency": 909400000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH69": {
+            "frequency": 911000000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH70": {
+            "frequency": 912600000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH71": {
+            "frequency": 914200000,
+            "min_data_rate": "DR4",
+            "max_data_rate": "DR6",
+            "bandwidth": "BW_500KHZ"
+        }
+    },
+    "downlink_channels": {
+        "CH0": {
+            "frequency": 923300000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH1": {
+            "frequency": 923900000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH2": {
+            "frequency": 924500000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH3": {
+            "frequency": 925100000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH4": {
+            "frequency": 925700000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH5": {
+            "frequency": 926300000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH6": {
+            "frequency": 926900000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        },
+        "CH7": {
+            "frequency": 927500000,
+            "min_data_rate": "DR8",
+            "max_data_rate": "DR13",
+            "bandwidth": "BW_500KHZ"
+        }
+    },
+    "bands": {
+        "BAND0": {
+            "min_channel": "CH0",
+            "max_channel": "CH7"
+        },
+        "BAND1": {
+            "min_channel": "CH8",
+            "max_channel": "CH15"
+        },
+        "BAND2": {
+            "min_channel": "CH16",
+            "max_channel": "CH23"
+        },
+        "BAND3": {
+            "min_channel": "CH24",
+            "max_channel": "CH31"
+        },
+        "BAND4": {
+            "min_channel": "CH32",
+            "max_channel": "CH39"
+        },
+        "BAND5": {
+            "min_channel": "CH40",
+            "max_channel": "CH47"
+        },
+        "BAND6": {
+            "min_channel": "CH48",
+            "max_channel": "CH55"
+        },
+        "BAND7": {
+            "min_channel": "CH56",
+            "max_channel": "CH63"
+        }
     }
 }
