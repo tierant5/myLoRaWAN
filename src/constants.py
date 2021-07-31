@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import Radio
 import os
 
 path_to_data = f'{os.getcwd()}/data'
@@ -18,10 +19,14 @@ class REGION(Enum):
     IN865 = auto()
 
 
+class RADIO(Enum):
+    SX1276 = Radio.SX127X()
+
+
 class BW(Enum):
-    BW_125KHZ = 125000
-    BW_250KHZ = 250000
-    BW_500KHZ = 500000
+    BW_125KHZ = 7
+    BW_250KHZ = 8
+    BW_500KHZ = 9
 
 
 class SF(Enum):
@@ -58,44 +63,44 @@ class ACTIVATION(Enum):
 
 
 class DR(Enum):
-    DR0 = auto()
-    DR1 = auto()
-    DR2 = auto()
-    DR3 = auto()
-    DR4 = auto()
-    DR5 = auto()
-    DR6 = auto()
-    DR7 = auto()
-    DR8 = auto()
-    DR9 = auto()
-    DR10 = auto()
-    DR11 = auto()
-    DR12 = auto()
-    DR13 = auto()
-    DR14 = auto()
-    DR15 = auto()
+    DR0 = 0
+    DR1 = 1
+    DR2 = 2
+    DR3 = 3
+    DR4 = 4
+    DR5 = 5
+    DR6 = 6
+    DR7 = 7
+    DR8 = 8
+    DR9 = 9
+    DR10 = 10
+    DR11 = 11
+    DR12 = 12
+    DR13 = 13
+    DR14 = 14
+    DR15 = 15
     TYPE_LORA = auto()
     TYPE_LRFHSS = auto()
     TYPE_RFU = auto()
 
 
 class TXPOWER(Enum):
-    TXPOWER0 = auto()
-    TXPOWER1 = auto()
-    TXPOWER2 = auto()
-    TXPOWER3 = auto()
-    TXPOWER4 = auto()
-    TXPOWER5 = auto()
-    TXPOWER6 = auto()
-    TXPOWER7 = auto()
-    TXPOWER8 = auto()
-    TXPOWER9 = auto()
-    TXPOWER10 = auto()
-    TXPOWER11 = auto()
-    TXPOWER12 = auto()
-    TXPOWER13 = auto()
-    TXPOWER14 = auto()
-    TXPOWER15 = auto()
+    TXPOWER0 = 0
+    TXPOWER1 = 1
+    TXPOWER2 = 2
+    TXPOWER3 = 3
+    TXPOWER4 = 4
+    TXPOWER5 = 5
+    TXPOWER6 = 6
+    TXPOWER7 = 7
+    TXPOWER8 = 8
+    TXPOWER9 = 9
+    TXPOWER10 = 10
+    TXPOWER11 = 11
+    TXPOWER12 = 12
+    TXPOWER13 = 13
+    TXPOWER14 = 14
+    TXPOWER15 = 15
 
 
 class CHMASK(Enum):

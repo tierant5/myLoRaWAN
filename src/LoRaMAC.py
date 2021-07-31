@@ -1,19 +1,9 @@
-from helpers import load_all_region_json, load_region_json
-from constants import (
-    CHMASK,
-    KEYS,
-    REGION,
-    BW,
-    SF,
-    CR,
-    DEVCLASS,
-    ACTIVATION,
-    TXPOWER,
-    DR,
-)
-from constants import get_enum
-from DataRate import DataRate
 from ChannelMask import ChannelMaskCntl
+from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
+                       SF, TXPOWER, RADIO, get_enum)
+from DataRate import DataRate
+from helpers import load_all_region_json, load_region_json
+from Radio import Radio
 
 
 class LoRaMAC:
@@ -22,13 +12,13 @@ class LoRaMAC:
     def __init__(
         self,
         region=REGION.US915,
+        device_class=DEVCLASS.CLASS_A,
+        adr=False,
+        radio=RADIO.SX1276,
         frequency=None,
         tx_power=None,
-        power_mode=None,
-        adr=False,
         public=False,
-        tx_retries=2,
-        device_class=DEVCLASS.CLASS_A,
+        tx_retries=2
     ):
 
         self.__region = None
@@ -80,11 +70,14 @@ class LoRaMAC:
         self.__tx_power = None
         self.__channel_mask_cntl = None
         self.__rx1droffset = None
+        self.__radio = None
 
         # Set self.****
         self.region = region
         self.adr = adr
+        self.radio = radio
         self.device_class = device_class
+        self.tx_retries = tx_retries
         # TODO Check if previous settings are present
         self.load_defaults()
 
@@ -612,6 +605,17 @@ class LoRaMAC:
                 raise ValueError(f"{self}.rx1droffset is not empty!")
         else:
             raise TypeError
+
+    @property
+    def radio(self) -> Radio:
+        return self.__radio
+
+    @radio.setter
+    def radio(self, radio):
+        if isinstance(radio, RADIO):
+            self.__radio = radio.value
+        else:
+            TypeError
 
 
 if __name__ == "__main__":
