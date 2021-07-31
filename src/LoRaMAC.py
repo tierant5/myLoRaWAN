@@ -1,4 +1,5 @@
-from ChannelMask import ChannelMaskCntl
+from src.constants import UPLINK
+from Channel import Channel, ChannelMaskCntl
 from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
                        SF, TXPOWER, RADIO, get_enum)
 from DataRate import DataRate
@@ -69,6 +70,8 @@ class LoRaMAC:
         self.__data_rates = None
         self.__tx_power = None
         self.__channel_mask_cntl = None
+        self.__uplink_channels = None
+        self.__downlink_channels = None
         self.__rx1droffset = None
         self.__radio = None
 
@@ -123,6 +126,8 @@ class LoRaMAC:
         self.tx_power = json_data[KEYS.TX_POWER.value]
         self.channel_mask_cntl = json_data[KEYS.CHANNEL_MASK_CNTL.value]
         self.rx1droffset = json_data[KEYS.RX1DROFFSET.value]
+        self.uplink_channels = json_data[KEYS.UPLINK_CH.value]
+        self.downlink_channels = json_data[KEYS.DOWNLINK_CH.value]
 
     ###########################################################################
     # Properties
@@ -603,6 +608,23 @@ class LoRaMAC:
                     self.__rx1droffset[dr] = drs
             else:
                 raise ValueError(f"{self}.rx1droffset is not empty!")
+        else:
+            raise TypeError
+
+    @property
+    def uplink_channels(self) -> dict:
+        return self.__uplink_channels
+
+    @uplink_channels.setter
+    def uplink_channels(self, uplink_channels):
+        if isinstance(uplink_channels, dict):
+            if self.__uplink_channels is None:
+                self.__uplink_channels = {}
+                for key, value in uplink_channels.items():
+                    ch = get_enum(UPLINK, key)
+                    self.__uplink_channels[ch] = Channel(**value)
+            else:
+                raise ValueError(f"{self}.uplink_channels is not empty!")
         else:
             raise TypeError
 

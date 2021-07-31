@@ -113,9 +113,106 @@ class CHMASK(Enum):
     CNTL6 = auto()
     CNTL7 = auto()
     TYPE_INDIVIDUAL = auto()
-    TYPE_BLOCK = auto()
+    TYPE_BAND = auto()
     TYPE_ALL_ON = auto()
     TYPE_ALL_OFF = auto()
+
+
+class UPLINK(Enum):
+    CH0 = 0
+    CH1 = 1
+    CH2 = 2
+    CH3 = 3
+    CH4 = 4
+    CH5 = 5
+    CH6 = 6
+    CH7 = 7
+    CH8 = 8
+    CH9 = 9
+    CH10 = 10
+    CH11 = 11
+    CH12 = 12
+    CH13 = 13
+    CH14 = 14
+    CH15 = 15
+    CH16 = 16
+    CH17 = 17
+    CH18 = 18
+    CH19 = 19
+    CH20 = 20
+    CH21 = 21
+    CH22 = 22
+    CH23 = 23
+    CH24 = 24
+    CH25 = 25
+    CH26 = 26
+    CH27 = 27
+    CH28 = 28
+    CH29 = 29
+    CH30 = 30
+    CH31 = 31
+    CH32 = 32
+    CH33 = 33
+    CH34 = 34
+    CH35 = 35
+    CH36 = 36
+    CH37 = 37
+    CH38 = 38
+    CH39 = 39
+    CH40 = 40
+    CH41 = 41
+    CH42 = 42
+    CH43 = 43
+    CH44 = 44
+    CH45 = 45
+    CH46 = 46
+    CH47 = 47
+    CH48 = 48
+    CH49 = 49
+    CH50 = 50
+    CH51 = 51
+    CH52 = 52
+    CH53 = 53
+    CH54 = 54
+    CH55 = 55
+    CH56 = 56
+    CH57 = 57
+    CH58 = 58
+    CH59 = 59
+    CH60 = 60
+    CH61 = 61
+    CH62 = 62
+    CH63 = 63
+    CH64 = 64
+    CH65 = 65
+    CH66 = 66
+    CH67 = 67
+    CH68 = 68
+    CH69 = 69
+    CH70 = 70
+    CH71 = 71
+
+
+class DOWNLINK(Enum):
+    CH0 = 0
+    CH1 = 1
+    CH2 = 2
+    CH3 = 3
+    CH4 = 4
+    CH5 = 5
+    CH6 = 6
+    CH7 = 7
+
+
+class BAND(Enum):
+    BAND0 = 0
+    BAND1 = 1
+    BAND2 = 2
+    BAND3 = 3
+    BAND4 = 4
+    BAND5 = 5
+    BAND6 = 6
+    BAND7 = 7
 
 
 class KEYS(Enum):
@@ -159,5 +256,16 @@ class KEYS(Enum):
     DR_MAX_M_PAYLOAD = 'max_m_payload'
     DR_MAX_N_PAYLOAD = 'max_n_payload'
     CHMASK_TYPE = 'type'
-    CHMASK_MIN = 'min'
-    CHMASK_MAX = 'max'
+    CHMASK_MIN_CH = 'min_channel'
+    CHMASK_MAX_CH = 'max_channel'
+    CHMASK_MIN_BAND = 'min_band'
+    CHMASK_MAX_BAND = 'max_band'
+    UPLINK_CH = 'uplink_channels'
+    DOWNLINK_CH = 'downlink_channels'
+    CH_FREQ = 'frequency'
+    CH_MIN_DR = 'min_data_rate'
+    CH_MAX_DR = 'max_data_rate'
+    CH_BW = 'bandwidth'
+    BANDS = 'bands'
+    BAND_MIN_CH = 'min_channel'
+    BAND_MAX_CH = 'max_channel'
