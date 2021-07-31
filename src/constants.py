@@ -104,14 +104,14 @@ class TXPOWER(Enum):
 
 
 class CHMASK(Enum):
-    CNTL0 = auto()
-    CNTL1 = auto()
-    CNTL2 = auto()
-    CNTL3 = auto()
-    CNTL4 = auto()
-    CNTL5 = auto()
-    CNTL6 = auto()
-    CNTL7 = auto()
+    CNTL0 = 0
+    CNTL1 = 1
+    CNTL2 = 2
+    CNTL3 = 3
+    CNTL4 = 4
+    CNTL5 = 5
+    CNTL6 = 6
+    CNTL7 = 7
     TYPE_INDIVIDUAL = auto()
     TYPE_BAND = auto()
     TYPE_ALL_ON = auto()

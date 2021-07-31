@@ -1,4 +1,4 @@
-from src.constants import UPLINK
+from src.constants import DOWNLINK, UPLINK
 from Channel import Channel, ChannelMaskCntl
 from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
                        SF, TXPOWER, RADIO, get_enum)
@@ -625,6 +625,23 @@ class LoRaMAC:
                     self.__uplink_channels[ch] = Channel(**value)
             else:
                 raise ValueError(f"{self}.uplink_channels is not empty!")
+        else:
+            raise TypeError
+
+    @property
+    def downlink_channels(self) -> dict:
+        return self.__downlink_channels
+
+    @downlink_channels.setter
+    def downlink_channels(self, downlink_channels):
+        if isinstance(downlink_channels, dict):
+            if self.__downlink_channels is None:
+                self.__downlink_channels = {}
+                for key, value in downlink_channels.items():
+                    ch = get_enum(DOWNLINK, key)
+                    self.__downlink_channels[ch] = Channel(**value)
+            else:
+                raise ValueError(f"{self}.downlink_channels is not empty!")
         else:
             raise TypeError
 
