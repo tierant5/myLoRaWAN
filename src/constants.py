@@ -247,7 +247,7 @@ class KEYS(Enum):
     DATA_RATES = 'data_rates'
     TX_POWER = 'tx_power'
     CHANNEL_MASK_CNTL = 'channel_mask_cntl'
-    RX1DROFFSET = 'rx1droffset'
+    RX1DROFFSET_TABLE = 'rx1droffsets_table'
     DR_TYPE = 'type'
     DR_SF = 'spreading_factor'
     DR_BW = 'bandwidth'

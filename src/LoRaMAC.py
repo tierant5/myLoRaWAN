@@ -72,7 +72,7 @@ class LoRaMAC:
         self.__channel_mask_cntl = None
         self.__uplink_channels = None
         self.__downlink_channels = None
-        self.__rx1droffset = None
+        self.__rx1droffset_table = None
         self.__radio = None
 
         # Set self.****
@@ -125,7 +125,7 @@ class LoRaMAC:
         self.data_rates = json_data[KEYS.DATA_RATES.value]
         self.tx_power = json_data[KEYS.TX_POWER.value]
         self.channel_mask_cntl = json_data[KEYS.CHANNEL_MASK_CNTL.value]
-        self.rx1droffset = json_data[KEYS.RX1DROFFSET.value]
+        self.rx1droffset_table = json_data[KEYS.RX1DROFFSET_TABLE.value]
         self.uplink_channels = json_data[KEYS.UPLINK_CH.value]
         self.downlink_channels = json_data[KEYS.DOWNLINK_CH.value]
 
@@ -594,20 +594,20 @@ class LoRaMAC:
             raise TypeError
 
     @property
-    def rx1droffset(self) -> dict:
-        return self.__rx1droffset
+    def rx1droffset_table(self) -> dict:
+        return self.__rx1droffset_table
 
-    @rx1droffset.setter
-    def rx1droffset(self, rx1droffset):
-        if isinstance(rx1droffset, dict):
-            if self.__rx1droffset is None:
-                self.__rx1droffset = {}
-                for key, value in rx1droffset.items():
+    @rx1droffset_table.setter
+    def rx1droffset_table(self, rx1droffset_table):
+        if isinstance(rx1droffset_table, dict):
+            if self.__rx1droffset_table is None:
+                self.__rx1droffset_table = {}
+                for key, value in rx1droffset_table.items():
                     dr = get_enum(DR, key)
                     drs = [get_enum(DR, item) for item in value]
-                    self.__rx1droffset[dr] = drs
+                    self.__rx1droffset_table[dr] = drs
             else:
-                raise ValueError(f"{self}.rx1droffset is not empty!")
+                raise ValueError(f"{self}.rx1droffset_table is not empty!")
         else:
             raise TypeError
 
