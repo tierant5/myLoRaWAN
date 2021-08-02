@@ -222,3 +222,57 @@ class Channel(object):
     @property
     def data_rates(self) -> list:
         return self.__data_rates
+
+
+class Band(object):
+    """" Class to define a LoRa Band """
+
+    def __init__(self, **kwargs):
+        self.__min_channel = None
+        self.__max_channel = None
+        self.__channel_list = None
+
+        for key, value in kwargs.items():
+            if key == KEYS.BAND_MIN_CH.value:
+                self.min_channel = value
+            elif key == KEYS.BAND_MAX_CH.value:
+                self.max_channel = value
+            else:
+                raise KeyError
+
+        if self.min_channel is not None and self.max_channel is not None:
+            self.__channel_list = [
+                UPLINK(ch) for ch in range(
+                    self.min_channel.value, self.max_channel.value + 1
+                )
+            ]
+
+    @property
+    def min_channel(self) -> UPLINK:
+        return self.__min_channel
+
+    @min_channel.setter
+    def min_channel(self, min_channel):
+        if isinstance(min_channel, UPLINK):
+            self.__min_channel = min_channel
+        elif isinstance(min_channel, str):
+            self.__min_channel = get_enum(UPLINK, min_channel)
+        else:
+            raise TypeError
+
+    @property
+    def max_channel(self) -> UPLINK:
+        return self.__max_channel
+
+    @max_channel.setter
+    def max_channel(self, max_channel):
+        if isinstance(max_channel, UPLINK):
+            self.__max_channel = max_channel
+        elif isinstance(max_channel, str):
+            self.__max_channel = get_enum(UPLINK, max_channel)
+        else:
+            raise TypeError
+
+    @property
+    def channel_list(self) -> list:
+        return self.__channel_list

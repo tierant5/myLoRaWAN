@@ -5,7 +5,7 @@
         "BW_125KHZ", 
         "BW_500KHZ"
     ],
-    "join_req_data_rate": {
+    "join_req_data_rates": {
         "BW_125KHZ": "DR0",
         "BW_500KHZ": "DR4"
     },
@@ -161,7 +161,7 @@
             "max_n_payload": -1
         }
     },
-    "tx_power": {
+    "tx_powers": {
         "TXPOWER0": 30,
         "TXPOWER1": 28,
         "TXPOWER2": 26,
@@ -179,7 +179,7 @@
         "TXPOWER14": 2,
         "TXPOWER15": -1
     },
-    "channel_mask_cntl": {
+    "channel_mask_cntl_table": {
         "CNTL0": {
             "type": "individual",
             "min_channel": "CH0",
