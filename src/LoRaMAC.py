@@ -15,8 +15,8 @@ class LoRaMAC:
         device_class=DEVCLASS.CLASS_A,
         adr=False,
         radio=RADIO.SX1276,
-        frequency=None,
-        tx_powers=None,
+        tx_channel=None,
+        tx_power=None,
         public=False,
         tx_retries=1
     ):
@@ -84,7 +84,7 @@ class LoRaMAC:
         self.__default_rx2_frequency = None
 
         # Join-Request Params
-        self.__join_reqeust_data_rate = None
+        self.__join_request_data_rate = None
 
         # Join-Accept Params
         self.__join_accept_delay1 = None
@@ -141,6 +141,8 @@ class LoRaMAC:
         self.optional_data_rate = json_data[KEYS.OPTIONAL_DATA_RATE.value]
         self.txparamsetupreq_support = json_data[KEYS.TXPARAMSETUPREQ_SUPPORT.value]    # noqa: E501
         self.max_eirp = json_data[KEYS.MAX_EIRP.value]
+        self.allowed_rx1droffset = json_data[KEYS.ALLOWED_RX1DROFFSET.value]
+        self.default_rx1droffset = json_data[KEYS.DEFAULT_RX1DROFFSET.value]
         self.default_rx2_data_rate = json_data[KEYS.DEFAULT_RX2_DATA_RATE.value]    # noqa: E501
         self.default_rx2_frequency = json_data[KEYS.DEFAULT_RX2_FREQUENCY.value]    # noqa: E501
         self.duty_cycle = json_data[KEYS.DUTY_CYCLE.value]
@@ -787,6 +789,24 @@ class LoRaMAC:
                 raise TypeError
         else:
             raise ValueError(f"{self}.tx_channel is not set!")
+
+    @property
+    def rx1droffset(self) -> int:
+        return self.__rx1droffset
+
+    @rx1droffset.setter
+    def rx1droffset(self, rx1droffset):
+        if self.tx_data_rate is not None:
+            if isinstance(rx1droffset, int):
+                if rx1droffset in self.allowed_rx1droffset:
+                    self.__rx1droffset = rx1droffset
+                    self.rx1_data_rate = self.rx1droffset_table[self.tx_data_rate.datarate][rx1droffset]    # noqa: E501
+                else:
+                    raise ValueError(f"{rx1droffset} is not an allowed rx1droffset")    # noqa: E501
+            else:
+                raise TypeError
+        else:
+            raise ValueError(f"{self}.tx_data_rate is not set!")
 
     @property
     def radio(self) -> Radio:
