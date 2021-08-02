@@ -1,7 +1,6 @@
-from src.constants import DOWNLINK, UPLINK
-from Channel import Channel, ChannelMaskCntl
+from Channel import Channel, ChannelMaskCntl, Band
 from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
-                       SF, TXPOWER, RADIO, get_enum)
+                       SF, TXPOWER, RADIO, BAND, DOWNLINK, UPLINK, get_enum)
 from DataRate import DataRate
 from helpers import load_all_region_json, load_region_json
 from Radio import Radio
@@ -17,34 +16,20 @@ class LoRaMAC:
         adr=False,
         radio=RADIO.SX1276,
         frequency=None,
-        tx_power=None,
+        tx_powers=None,
         public=False,
         tx_retries=1
     ):
 
-        self.__region = None
-        self.__frequency = None
-        self.__tx_power = None
-        self.__bandwidth = None
-        self.__spreading_factor = None
         self.__preamble = None
-        self.__coding_rate = None
         self.__power_mode = None
         self.__tx_iq = None
         self.__rx_iq = None
         self.__adr = None
         self.__public = None
-        self.__tx_retries = None
-        self.__device_class = None
-        self.__activation = None
-        self.__rx_delay1 = None
-        self.__rx_delay2 = None
-        self.__join_accept_delay1 = None
-        self.__join_accept_delay2 = None
         self.__max_fcnt_gap = None
         self.__adr_ack_limit = None
         self.__adr_ack_delay = None
-        self.__retransmit_timeout = None
         self.__downlink_dwell_time = None
         self.__uplink_dwell_time = None
         self.__ping_slot_periodicity = None
@@ -52,28 +37,64 @@ class LoRaMAC:
         self.__ping_slot_channel = None
         self.__class_b_resp_timeout = None
         self.__class_c_resp_timeout = None
-        self.__ism_id = None
-        self.__supported_bw = None
-        self.__join_request_data_rate = None
         self.__cflist_type_supported = None
+        self.__max_eirp = None
+        self.__radio = None
+
+        # Device Params
+        self.__region = None
+        self.__ism_id = None
+        self.__device_class = None
+        self.__activation = None
+        self.__data_rates = None
+        self.__channel_mask_cntl_table = None
+        self.__uplink_channels = None
+        self.__downlink_channels = None
         self.__mandatory_data_rate = None
         self.__optional_data_rate = None
         self.__txparamsetupreq_support = None
-        self.__max_eirp = None
-        self.__default_rx1droffset = None
-        self.__allowed_rx1droffset = None
-        self.__default_rx2_data_rate = None
-        self.__default_rx2_frequency = None
+        self.__bands = None
+
+        # Radio Params
+        self.__frequency = None
+        self.__bandwidth = None
+        self.__supported_bw = None
+        self.__spreading_factor = None
+        self.__coding_rate = None
         self.__duty_cycle = None
         self.__dwell_time = None
-        self.__coding_rate = None
-        self.__data_rates = None
-        self.__tx_power = None
-        self.__channel_mask_cntl = None
-        self.__uplink_channels = None
-        self.__downlink_channels = None
+
+        # TX Params
+        self.__tx_channel = None
+        self.__tx_data_rate = None
+        self.__tx_powers = None
+        self.__tx_retries = None
+        self.__retransmit_timeout = None
+
+        # RX1 Params
+        self.__rx1_data_rate = None
+        self.__rx1_channel = None
+        self.__rx1droffset = None
+        self.__rx1_received = None
+        self.__rx_delay1 = None
+        self.__rx_delay2 = None
+        self.__default_rx1droffset = None
+        self.__allowed_rx1droffset = None
         self.__rx1droffset_table = None
-        self.__radio = None
+
+        # RX2 Params
+        self.__rx2_data_rate = None
+        self.__rx2_channel = None
+        self.__default_rx2_data_rate = None
+        self.__default_rx2_frequency = None
+
+        # Join-Request Params
+        self.__join_request_data_rates = None
+        self.__join_reqeust_data_rate = None
+
+        # Join-Accept Params
+        self.__join_accept_delay1 = None
+        self.__join_accept_delay2 = None
 
         # Set self.****
         self.region = region
@@ -111,7 +132,7 @@ class LoRaMAC:
     def decompose_region_defaults(self, json_data):
         self.ism_id = json_data[KEYS.ISM_ID.value]
         self.supported_bw = json_data[KEYS.SUPPORTED_BW.value]
-        self.join_request_data_rate = json_data[KEYS.JOIN_REQ_DATA_RATE.value]
+        self.join_request_data_rates = json_data[KEYS.JOIN_REQ_DATA_RATES.value]    # noqa: E501
         self.cflist_type_supported = json_data[KEYS.CFLIST_TYPE_SUPPORTED.value]    # noqa: E501
         self.mandatory_data_rate = json_data[KEYS.MANDATORY_DATA_RATE.value]
         self.optional_data_rate = json_data[KEYS.OPTIONAL_DATA_RATE.value]
@@ -123,11 +144,12 @@ class LoRaMAC:
         self.dwell_time = json_data[KEYS.DWELL_TIME.value]
         self.coding_rate = json_data[KEYS.CODING_RATE.value]
         self.data_rates = json_data[KEYS.DATA_RATES.value]
-        self.tx_power = json_data[KEYS.TX_POWER.value]
-        self.channel_mask_cntl = json_data[KEYS.CHANNEL_MASK_CNTL.value]
+        self.tx_powers = json_data[KEYS.TX_POWERS.value]
+        self.channel_mask_cntl_table = json_data[KEYS.CHANNEL_MASK_CNTL_TABLE.value]    # noqa: E501
         self.rx1droffset_table = json_data[KEYS.RX1DROFFSET_TABLE.value]
         self.uplink_channels = json_data[KEYS.UPLINK_CH.value]
         self.downlink_channels = json_data[KEYS.DOWNLINK_CH.value]
+        self.bands = json_data[KEYS.BANDS.value]
 
     ###########################################################################
     # Properties
@@ -378,18 +400,18 @@ class LoRaMAC:
             raise TypeError
 
     @property
-    def join_request_data_rate(self) -> dict:
-        return self.__join_request_data_rate
+    def join_request_data_rates(self) -> dict:
+        return self.__join_request_data_rates
 
-    @join_request_data_rate.setter
-    def join_request_data_rate(self, join_request_data_rate):
-        if isinstance(join_request_data_rate, dict):
-            if self.__join_request_data_rate is None:
-                self.__join_request_data_rate = {}
-                for bw, dr in join_request_data_rate.items():
-                    self.__join_request_data_rate[get_enum(BW, bw)] = get_enum(DR, dr)  # noqa: E501
+    @join_request_data_rates.setter
+    def join_request_data_rates(self, join_request_data_rates):
+        if isinstance(join_request_data_rates, dict):
+            if self.__join_request_data_rates is None:
+                self.__join_request_data_rates = {}
+                for bw, dr in join_request_data_rates.items():
+                    self.__join_request_data_rates[get_enum(BW, bw)] = get_enum(DR, dr)  # noqa: E501
             else:
-                raise ValueError(f"{self}.join_request_data_rate already exists!")  # noqa: E501
+                raise ValueError(f"{self}.join_request_data_rates already exists!")  # noqa: E501
         else:
             raise TypeError
 
@@ -561,35 +583,35 @@ class LoRaMAC:
             raise TypeError
 
     @property
-    def tx_power(self) -> dict:
-        return self.__tx_power
+    def tx_powers(self) -> dict:
+        return self.__tx_powers
 
-    @tx_power.setter
-    def tx_power(self, tx_power):
-        if isinstance(tx_power, dict):
-            if self.__tx_power is None:
-                self.__tx_power = {}
-                for key, value in tx_power.items():
-                    self.__tx_power[get_enum(TXPOWER, key)] = value
+    @tx_powers.setter
+    def tx_powers(self, tx_powers):
+        if isinstance(tx_powers, dict):
+            if self.__tx_powers is None:
+                self.__tx_powers = {}
+                for key, value in tx_powers.items():
+                    self.__tx_powers[get_enum(TXPOWER, key)] = value
             else:
-                raise ValueError(f"{self}.tx_power is not empty!")
+                raise ValueError(f"{self}.tx_powers is not empty!")
         else:
             raise TypeError
 
     @property
-    def channel_mask_cntl(self) -> dict:
-        return self.__channel_mask_cntl
+    def channel_mask_cntl_table(self) -> dict:
+        return self.__channel_mask_cntl_table
 
-    @channel_mask_cntl.setter
-    def channel_mask_cntl(self, channel_mask_cntl: dict):
-        if isinstance(channel_mask_cntl, dict):
-            if self.__channel_mask_cntl is None:
-                self.__channel_mask_cntl = {}
-                for key, value in channel_mask_cntl.items():
+    @channel_mask_cntl_table.setter
+    def channel_mask_cntl_table(self, channel_mask_cntl_table: dict):
+        if isinstance(channel_mask_cntl_table, dict):
+            if self.__channel_mask_cntl_table is None:
+                self.__channel_mask_cntl_table = {}
+                for key, value in channel_mask_cntl_table.items():
                     cntl = get_enum(CHMASK, key)
-                    self.__channel_mask_cntl[cntl] = ChannelMaskCntl(cntl, **value)   # noqa: E501
+                    self.__channel_mask_cntl_table[cntl] = ChannelMaskCntl(cntl, **value)   # noqa: E501
             else:
-                raise ValueError(f"{self}.channel_mask_cntl is not empty!")
+                raise ValueError(f"{self}.channel_mask_cntl_table is not empty!")   # noqa: E501
         else:
             raise TypeError
 
@@ -642,6 +664,23 @@ class LoRaMAC:
                     self.__downlink_channels[ch] = Channel(**value)
             else:
                 raise ValueError(f"{self}.downlink_channels is not empty!")
+        else:
+            raise TypeError
+
+    @property
+    def bands(self) -> dict:
+        return self.__bands
+
+    @bands.setter
+    def bands(self, bands):
+        if isinstance(bands, dict):
+            if self.__bands is None:
+                self.__bands = {}
+                for key, value in bands.items():
+                    band = get_enum(BAND, key)
+                    self.__bands[band] = Band(**value)
+            else:
+                raise ValueError(f"{self}.bands is not empty!")
         else:
             raise TypeError
 
