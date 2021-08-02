@@ -221,7 +221,7 @@
             "max_channel": "CH71"
         }
     },
-    "rx1droffset": {
+    "rx1droffset_table": {
         "DR0": ["DR10", "DR9", "DR8", "DR8"],
         "DR1": ["DR11", "DR10", "DR9", "DR8"],
         "DR2": ["DR12", "DR11", "DR10", "DR9"],
