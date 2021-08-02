@@ -19,7 +19,7 @@ class LoRaMAC:
         frequency=None,
         tx_power=None,
         public=False,
-        tx_retries=2
+        tx_retries=1
     ):
 
         self.__region = None
