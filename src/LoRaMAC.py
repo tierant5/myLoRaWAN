@@ -688,17 +688,54 @@ class LoRaMAC:
             raise TypeError
 
     @property
+    def tx_channel(self) -> Channel:
+        return self.__tx_channel
+
+    @tx_channel.setter
+    def tx_channel(self, tx_channel):
+        if isinstance(tx_channel, UPLINK):
+            self.__tx_channel = self.uplink_channels[tx_channel]
+        else:
+            raise TypeError
+
+    @property
+    def rx1_channel(self) -> Channel:
+        return self.__rx1_channel
+
+    @rx1_channel.setter
+    def rx1_channel(self, rx1_channel):
+        if isinstance(rx1_channel, DOWNLINK):
+            self.__rx1_channel = self.downlink_channels[rx1_channel]
+        else:
+            raise TypeError
+
+    @property
+    def rx2_channel(self) -> Channel:
+        return self.__rx2_channel
+
+    @rx2_channel.setter
+    def rx2_channel(self, rx2_channel):
+        if isinstance(rx2_channel, DOWNLINK):
+            self.__rx2_channel = self.downlink_channels[rx2_channel]
+        else:
+            raise TypeError
+
+    @property
     def tx_data_rate(self) -> DataRate:
         return self.__tx_data_rate
 
     @tx_data_rate.setter
     def tx_data_rate(self, tx_data_rate):
-        if isinstance(tx_data_rate, DR):
-            self.__tx_data_rate = self.data_rates[tx_data_rate]
-        elif isinstance(tx_data_rate, str):
-            self.__tx_data_rate = self.data_rates[get_enum(DR, tx_data_rate)]
+        if self.tx_channel is not None:
+            if isinstance(tx_data_rate, DR):
+                if tx_data_rate in self.tx_channel.data_rates:
+                    self.__tx_data_rate = self.data_rates[tx_data_rate]
+                else:
+                    raise ValueError(f"{tx_data_rate} not in allowed data rates for tx_channel")     # noqa: E501
+            else:
+                raise TypeError
         else:
-            raise TypeError
+            raise ValueError(f"{self}.tx_channel is not set!")
 
     @property
     def rx1_data_rate(self) -> DataRate:
@@ -706,12 +743,16 @@ class LoRaMAC:
 
     @rx1_data_rate.setter
     def rx1_data_rate(self, rx1_data_rate):
-        if isinstance(rx1_data_rate, DR):
-            self.__rx1_data_rate = self.data_rates[rx1_data_rate]
-        elif isinstance(rx1_data_rate, str):
-            self.__rx1_data_rate = self.data_rates[get_enum(DR, rx1_data_rate)]
+        if self.rx1_channel is not None:
+            if isinstance(rx1_data_rate, DR):
+                if rx1_data_rate in self.rx1_channel.data_rates:
+                    self.__rx1_data_rate = self.data_rates[rx1_data_rate]
+                else:
+                    raise ValueError(f"{rx1_data_rate} not in allowed data rates for rx1_channel")     # noqa: E501
+            else:
+                raise TypeError
         else:
-            raise TypeError
+            raise ValueError(f"{self}.rx1_channel is not set!")
 
     @property
     def rx2_data_rate(self) -> DataRate:
@@ -719,12 +760,16 @@ class LoRaMAC:
 
     @rx2_data_rate.setter
     def rx2_data_rate(self, rx2_data_rate):
-        if isinstance(rx2_data_rate, DR):
-            self.__rx2_data_rate = self.data_rates[rx2_data_rate]
-        elif isinstance(rx2_data_rate, str):
-            self.__rx2_data_rate = self.data_rates[get_enum(DR, rx2_data_rate)]
+        if self.rx2_channel is not None:
+            if isinstance(rx2_data_rate, DR):
+                if rx2_data_rate in self.rx2_channel.data_rates:
+                    self.__rx2_data_rate = self.data_rates[rx2_data_rate]
+                else:
+                    raise ValueError(f"{rx2_data_rate} not in allowed data rates for rx2_channel")     # noqa: E501
+            else:
+                raise TypeError
         else:
-            raise TypeError
+            raise ValueError(f"{self}.rx2_channel is not set!")
 
     @property
     def join_request_data_rate(self) -> DataRate:
@@ -732,16 +777,16 @@ class LoRaMAC:
 
     @join_request_data_rate.setter
     def join_request_data_rate(self, join_request_data_rate):
-        if isinstance(join_request_data_rate, DR):
-            self.__join_request_data_rate = self.data_rates[
-                join_request_data_rate
-            ]
-        elif isinstance(join_request_data_rate, str):
-            self.__join_request_data_rate = self.data_rates[
-                get_enum(DR, join_request_data_rate)
-            ]
+        if self.tx_channel is not None:
+            if isinstance(join_request_data_rate, DR):
+                if join_request_data_rate in self.tx_channel.data_rates:
+                    self.__join_request_data_rate = self.data_rates[join_request_data_rate]     # noqa: E501
+                else:
+                    raise ValueError(f"{join_request_data_rate} not in allowed data rates for tx_channel")     # noqa: E501
+            else:
+                raise TypeError
         else:
-            raise TypeError
+            raise ValueError(f"{self}.tx_channel is not set!")
 
     @property
     def radio(self) -> Radio:
