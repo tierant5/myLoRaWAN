@@ -32,11 +32,6 @@ class LoRaMAC:
         self.__adr_ack_delay = None
         self.__downlink_dwell_time = None
         self.__uplink_dwell_time = None
-        self.__ping_slot_periodicity = None
-        self.__ping_slot_datarate = None
-        self.__ping_slot_channel = None
-        self.__class_b_resp_timeout = None
-        self.__class_c_resp_timeout = None
         self.__cflist_type_supported = None
         self.__max_eirp = None
         self.__radio = None
@@ -46,20 +41,20 @@ class LoRaMAC:
         self.__ism_id = None
         self.__device_class = None
         self.__activation = None
+        self.__txparamsetupreq_support = None
+
+        # Lookups
         self.__data_rates = None
+        self.__mandatory_data_rate = None
+        self.__optional_data_rate = None
         self.__channel_mask_cntl_table = None
         self.__uplink_channels = None
         self.__downlink_channels = None
-        self.__mandatory_data_rate = None
-        self.__optional_data_rate = None
-        self.__txparamsetupreq_support = None
         self.__bands = None
+        self.__supported_bw = None
+        self.__join_request_data_rates = None
 
         # Radio Params
-        self.__frequency = None
-        self.__bandwidth = None
-        self.__supported_bw = None
-        self.__spreading_factor = None
         self.__coding_rate = None
         self.__duty_cycle = None
         self.__dwell_time = None
@@ -72,8 +67,8 @@ class LoRaMAC:
         self.__retransmit_timeout = None
 
         # RX1 Params
-        self.__rx1_data_rate = None
         self.__rx1_channel = None
+        self.__rx1_data_rate = None
         self.__rx1droffset = None
         self.__rx1_received = None
         self.__rx_delay1 = None
@@ -83,18 +78,26 @@ class LoRaMAC:
         self.__rx1droffset_table = None
 
         # RX2 Params
-        self.__rx2_data_rate = None
         self.__rx2_channel = None
+        self.__rx2_data_rate = None
         self.__default_rx2_data_rate = None
         self.__default_rx2_frequency = None
 
         # Join-Request Params
-        self.__join_request_data_rates = None
         self.__join_reqeust_data_rate = None
 
         # Join-Accept Params
         self.__join_accept_delay1 = None
         self.__join_accept_delay2 = None
+
+        # Class B Device Params
+        self.__ping_slot_periodicity = None
+        self.__ping_slot_datarate = None
+        self.__ping_slot_channel = None
+        self.__class_b_resp_timeout = None
+
+        # Class C Device Params
+        self.__class_c_resp_timeout = None
 
         # Set self.****
         self.region = region
@@ -681,6 +684,62 @@ class LoRaMAC:
                     self.__bands[band] = Band(**value)
             else:
                 raise ValueError(f"{self}.bands is not empty!")
+        else:
+            raise TypeError
+
+    @property
+    def tx_data_rate(self) -> DataRate:
+        return self.__tx_data_rate
+
+    @tx_data_rate.setter
+    def tx_data_rate(self, tx_data_rate):
+        if isinstance(tx_data_rate, DR):
+            self.__tx_data_rate = self.data_rates[tx_data_rate]
+        elif isinstance(tx_data_rate, str):
+            self.__tx_data_rate = self.data_rates[get_enum(DR, tx_data_rate)]
+        else:
+            raise TypeError
+
+    @property
+    def rx1_data_rate(self) -> DataRate:
+        return self.__rx1_data_rate
+
+    @rx1_data_rate.setter
+    def rx1_data_rate(self, rx1_data_rate):
+        if isinstance(rx1_data_rate, DR):
+            self.__rx1_data_rate = self.data_rates[rx1_data_rate]
+        elif isinstance(rx1_data_rate, str):
+            self.__rx1_data_rate = self.data_rates[get_enum(DR, rx1_data_rate)]
+        else:
+            raise TypeError
+
+    @property
+    def rx2_data_rate(self) -> DataRate:
+        return self.__rx2_data_rate
+
+    @rx2_data_rate.setter
+    def rx2_data_rate(self, rx2_data_rate):
+        if isinstance(rx2_data_rate, DR):
+            self.__rx2_data_rate = self.data_rates[rx2_data_rate]
+        elif isinstance(rx2_data_rate, str):
+            self.__rx2_data_rate = self.data_rates[get_enum(DR, rx2_data_rate)]
+        else:
+            raise TypeError
+
+    @property
+    def join_request_data_rate(self) -> DataRate:
+        return self.__join_request_data_rate
+
+    @join_request_data_rate.setter
+    def join_request_data_rate(self, join_request_data_rate):
+        if isinstance(join_request_data_rate, DR):
+            self.__join_request_data_rate = self.data_rates[
+                join_request_data_rate
+            ]
+        elif isinstance(join_request_data_rate, str):
+            self.__join_request_data_rate = self.data_rates[
+                get_enum(DR, join_request_data_rate)
+            ]
         else:
             raise TypeError
 
