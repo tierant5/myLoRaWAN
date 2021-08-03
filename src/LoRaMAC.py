@@ -15,10 +15,11 @@ class LoRaMAC:
         device_class=DEVCLASS.CLASS_A,
         adr=False,
         radio=RADIO.SX1276,
+        tx_retries=1,
+        band=BAND.BAND0,
         tx_channel=None,
         tx_power=None,
-        public=False,
-        tx_retries=1
+        public=False
     ):
 
         self.__preamble = None
@@ -42,6 +43,7 @@ class LoRaMAC:
         self.__device_class = None
         self.__activation = None
         self.__txparamsetupreq_support = None
+        self.__band = None
 
         # Lookups
         self.__data_rates = None
@@ -107,6 +109,7 @@ class LoRaMAC:
         self.tx_retries = tx_retries
         # TODO Check if previous settings are present
         self.load_defaults()
+        self.set_defaults(band, tx_channel, tx_power)
 
     def load_defaults(self):
         self.load_all_region_defaults()
@@ -155,6 +158,17 @@ class LoRaMAC:
         self.uplink_channels = json_data[KEYS.UPLINK_CH.value]
         self.downlink_channels = json_data[KEYS.DOWNLINK_CH.value]
         self.bands = json_data[KEYS.BANDS.value]
+
+    def set_defaults(self, band, tx_channel, tx_power):
+        self.band = band
+        if tx_channel is None:
+            pass
+        else:
+            self.tx_channel = tx_channel
+        self.tx_data_rate = self.tx_channel.data_rates[0]
+        self.rx1droffset = self.default_rx1droffset
+        # self.rx2_channel = self.default_rx2_frequency
+        # self.rx2_data_rate = self.default_rx2_data_rate
 
     ###########################################################################
     # Properties
@@ -697,6 +711,8 @@ class LoRaMAC:
     def tx_channel(self, tx_channel):
         if isinstance(tx_channel, UPLINK):
             self.__tx_channel = self.uplink_channels[tx_channel]
+            rx_channel_num = tx_channel.value % 8
+            self.rx1_channel = DOWNLINK(rx_channel_num)
         else:
             raise TypeError
 
@@ -819,6 +835,21 @@ class LoRaMAC:
         else:
             TypeError
 
+    @property
+    def band(self) -> Band:
+        return self.__band
+
+    @band.setter
+    def band(self, band):
+        if self.bands is not None:
+            if isinstance(band, BAND):
+                self.__band = self.bands[band]
+            else:
+                raise TypeError
+        else:
+            raise ValueError(f"{self}.bands is empty!")
+
 
 if __name__ == "__main__":
-    LoRaMAC()
+    # LoRaMAC()
+    pass
