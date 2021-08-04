@@ -1,4 +1,5 @@
-from constants import KEYS, CHMASK, UPLINK, DOWNLINK, DR, BW, BAND, get_enum
+from constants import KEYS, CHMASK, UPLINK, DOWNLINK, DR, BW, BAND
+from helpers import get_enum
 
 
 class ChannelMaskCntl(object):

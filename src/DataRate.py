@@ -1,4 +1,5 @@
-from constants import KEYS, DR, SF, BW, get_enum
+from constants import KEYS, DR, SF, BW
+from helpers import get_enum
 
 
 class DataRate(object):

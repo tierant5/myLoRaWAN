@@ -1,8 +1,9 @@
 from Channel import Channel, ChannelMaskCntl, Band
 from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
-                       SF, TXPOWER, RADIO, BAND, DOWNLINK, UPLINK, get_enum)
+                       SF, TXPOWER, RADIO, BAND, DOWNLINK, UPLINK)
 from DataRate import DataRate
-from helpers import load_all_region_json, load_region_json
+from helpers import (load_all_region_json, load_region_json,
+                     get_enum, get_key_from_value)
 from Radio import Radio
 from random import randint
 
@@ -55,6 +56,7 @@ class LoRaMAC:
         self.__bands = None
         self.__supported_bw = None
         self.__join_request_data_rates = None
+        self.__tx_powers = None
 
         # Radio Params
         self.__coding_rate = None
@@ -64,7 +66,7 @@ class LoRaMAC:
         # TX Params
         self.__tx_channel = None
         self.__tx_data_rate = None
-        self.__tx_powers = None
+        self.__tx_power = None
         self.__tx_retries = None
         self.__retransmit_timeout = None
 
@@ -109,7 +111,7 @@ class LoRaMAC:
         self.tx_retries = tx_retries
         # TODO Check if previous settings are present
         self.load_defaults()
-        self.set_defaults(band, tx_power)
+        self.set_defaults(band)
 
     def load_defaults(self):
         self.load_all_region_defaults()
@@ -159,7 +161,7 @@ class LoRaMAC:
         self.downlink_channels = json_data[KEYS.DOWNLINK_CH.value]
         self.bands = json_data[KEYS.BANDS.value]
 
-    def set_defaults(self, band, tx_power):
+    def set_defaults(self, band):
         self.band = band
         rand_ch_index = randint(0, len(self.band.channel_list) - 1)
         self.tx_channel = self.band.channel_list[rand_ch_index]
@@ -167,6 +169,7 @@ class LoRaMAC:
         self.rx1droffset = self.default_rx1droffset
         self.rx2_channel = self.default_rx2_channel
         self.rx2_data_rate = self.default_rx2_data_rate
+        self.tx_power = TXPOWER.TXPOWER0
 
     ###########################################################################
     # Properties
@@ -850,6 +853,20 @@ class LoRaMAC:
                 raise TypeError
         else:
             raise ValueError(f"{self}.bands is empty!")
+
+    @property
+    def tx_power(self) -> int:
+        return self.__tx_power
+
+    @tx_power.setter
+    def tx_power(self, tx_power):
+        if self.tx_powers is not None:
+            if isinstance(tx_power, TXPOWER):
+                self.__tx_power = self.tx_powers[tx_power]
+            else:
+                raise TypeError
+        else:
+            raise ValueError(f"{self}.tx_powers is empty!")
 
 
 if __name__ == "__main__":
