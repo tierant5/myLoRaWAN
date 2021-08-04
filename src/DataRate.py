@@ -1,4 +1,4 @@
-from constants import KEYS, DR, SF, BW
+from constants import BW, DR, KEYS, SF
 from helpers import get_enum
 
 
