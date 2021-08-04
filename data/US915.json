@@ -24,7 +24,7 @@
         0, 1, 2, 3
     ],
     "default_rx2_data_rate": "DR8",
-    "default_rx2_frequency": 923300000,
+    "default_rx2_channel": "CH0",
     "duty_cycle": false,
     "dwell_time": 0.400,
     "coding_rate": "CR_4_5",

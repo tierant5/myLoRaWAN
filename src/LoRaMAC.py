@@ -84,7 +84,7 @@ class LoRaMAC:
         self.__rx2_channel = None
         self.__rx2_data_rate = None
         self.__default_rx2_data_rate = None
-        self.__default_rx2_frequency = None
+        self.__default_rx2_channel = None
 
         # Join-Request Params
         self.__join_request_data_rate = None
@@ -148,7 +148,7 @@ class LoRaMAC:
         self.allowed_rx1droffset = json_data[KEYS.ALLOWED_RX1DROFFSET.value]
         self.default_rx1droffset = json_data[KEYS.DEFAULT_RX1DROFFSET.value]
         self.default_rx2_data_rate = json_data[KEYS.DEFAULT_RX2_DATA_RATE.value]    # noqa: E501
-        self.default_rx2_frequency = json_data[KEYS.DEFAULT_RX2_FREQUENCY.value]    # noqa: E501
+        self.default_rx2_channel = json_data[KEYS.DEFAULT_RX2_CH.value]    # noqa: E501
         self.duty_cycle = json_data[KEYS.DUTY_CYCLE.value]
         self.dwell_time = json_data[KEYS.DWELL_TIME.value]
         self.coding_rate = json_data[KEYS.CODING_RATE.value]
@@ -166,7 +166,7 @@ class LoRaMAC:
         self.tx_channel = self.band.channel_list[rand_ch_index]
         self.tx_data_rate = self.tx_channel.data_rates[0]
         self.rx1droffset = self.default_rx1droffset
-        # self.rx2_channel = self.default_rx2_frequency
+        # self.rx2_channel = self.default_rx2_channel
         # self.rx2_data_rate = self.default_rx2_data_rate
 
     ###########################################################################
@@ -538,13 +538,17 @@ class LoRaMAC:
             raise TypeError
 
     @property
-    def default_rx2_frequency(self) -> int:
-        return self.__default_rx2_frequency
+    def default_rx2_channel(self) -> DOWNLINK:
+        return self.__default_rx2_channel
 
-    @default_rx2_frequency.setter
-    def default_rx2_frequency(self, default_rx2_frequency: int):
-        if isinstance(default_rx2_frequency, int):
-            self.__default_rx2_frequency = default_rx2_frequency
+    @default_rx2_channel.setter
+    def default_rx2_channel(self, default_rx2_channel):
+        if isinstance(default_rx2_channel, DOWNLINK):
+            self.__default_rx2_channel = default_rx2_channel
+        elif isinstance(default_rx2_channel, str):
+            self.__default_rx2_channel = get_enum(
+                DOWNLINK, default_rx2_channel
+            )
         else:
             raise TypeError
 
@@ -662,7 +666,7 @@ class LoRaMAC:
                 self.__uplink_channels = {}
                 for key, value in uplink_channels.items():
                     ch = get_enum(UPLINK, key)
-                    self.__uplink_channels[ch] = Channel(**value)
+                    self.__uplink_channels[ch] = Channel(ch, **value)
             else:
                 raise ValueError(f"{self}.uplink_channels is not empty!")
         else:
@@ -679,7 +683,7 @@ class LoRaMAC:
                 self.__downlink_channels = {}
                 for key, value in downlink_channels.items():
                     ch = get_enum(DOWNLINK, key)
-                    self.__downlink_channels[ch] = Channel(**value)
+                    self.__downlink_channels[ch] = Channel(ch, **value)
             else:
                 raise ValueError(f"{self}.downlink_channels is not empty!")
         else:
