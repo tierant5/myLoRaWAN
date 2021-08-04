@@ -18,7 +18,6 @@ class LoRaMAC:
         radio=RADIO.SX1276,
         tx_retries=1,
         band=BAND.BAND0,
-        tx_channel=None,
         tx_power=None,
         public=False
     ):
@@ -110,7 +109,7 @@ class LoRaMAC:
         self.tx_retries = tx_retries
         # TODO Check if previous settings are present
         self.load_defaults()
-        self.set_defaults(band, tx_channel, tx_power)
+        self.set_defaults(band, tx_power)
 
     def load_defaults(self):
         self.load_all_region_defaults()
@@ -160,14 +159,14 @@ class LoRaMAC:
         self.downlink_channels = json_data[KEYS.DOWNLINK_CH.value]
         self.bands = json_data[KEYS.BANDS.value]
 
-    def set_defaults(self, band, tx_channel, tx_power):
+    def set_defaults(self, band, tx_power):
         self.band = band
         rand_ch_index = randint(0, len(self.band.channel_list) - 1)
         self.tx_channel = self.band.channel_list[rand_ch_index]
         self.tx_data_rate = self.tx_channel.data_rates[0]
         self.rx1droffset = self.default_rx1droffset
-        # self.rx2_channel = self.default_rx2_channel
-        # self.rx2_data_rate = self.default_rx2_data_rate
+        self.rx2_channel = self.default_rx2_channel
+        self.rx2_data_rate = self.default_rx2_data_rate
 
     ###########################################################################
     # Properties
