@@ -2,8 +2,7 @@ from Channel import Channel, ChannelMaskCntl, Band
 from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
                        SF, TXPOWER, RADIO, BAND, DOWNLINK, UPLINK)
 from DataRate import DataRate
-from helpers import (load_all_region_json, load_region_json,
-                     get_enum, get_key_from_value)
+from helpers import load_all_region_json, load_region_json, get_enum
 from Radio import Radio
 from random import randint
 
