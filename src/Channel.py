@@ -1,4 +1,4 @@
-from constants import KEYS, CHMASK, UPLINK, DR, BW, BAND, get_enum
+from constants import KEYS, CHMASK, UPLINK, DOWNLINK, DR, BW, BAND, get_enum
 
 
 class ChannelMaskCntl(object):
@@ -142,12 +142,15 @@ class ChannelMaskCntl(object):
 class Channel(object):
     """ Class to define a LoRa Channel """
 
-    def __init__(self, **kwargs):
+    def __init__(self, channel, **kwargs):
+        self.__channel = None
         self.__frequency = None
         self.__min_data_rate = None
         self.__max_data_rate = None
         self.__bandwidth = None
         self.__data_rates = None
+
+        self.channel = channel
 
         for key, value in kwargs.items():
             if key == KEYS.CH_FREQ.value:
@@ -168,6 +171,17 @@ class Channel(object):
             ]
         else:
             raise ValueError
+
+    @property
+    def channel(self):
+        return self.__channel
+
+    @channel.setter
+    def channel(self, channel):
+        if isinstance(channel, (UPLINK, DOWNLINK)):
+            self.__channel = channel
+        else:
+            raise TypeError(f'Type {type(channel)} is not allowed!')
 
     @property
     def frequency(self) -> int:

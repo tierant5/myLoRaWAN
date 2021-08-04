@@ -240,7 +240,7 @@ class KEYS(Enum):
     DEFAULT_RX1DROFFSET = 'default_rx1droffset'
     ALLOWED_RX1DROFFSET = 'allowed_rx1droffset'
     DEFAULT_RX2_DATA_RATE = 'default_rx2_data_rate'
-    DEFAULT_RX2_FREQUENCY = 'default_rx2_frequency'
+    DEFAULT_RX2_CH = 'default_rx2_channel'
     DUTY_CYCLE = 'duty_cycle'
     DWELL_TIME = 'dwell_time'
     CODING_RATE = 'coding_rate'
