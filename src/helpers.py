@@ -31,3 +31,16 @@ def load_region_json(region):
 def load_all_region_json():
     path = get_relative_path(path_to_data, all_region_defaults_file)
     return load_json(path)
+
+
+def get_enum(enum_class, enum_name):
+    return enum_class[enum_name]
+
+
+def get_key_from_value(search_dict, value):
+    keys = list(search_dict.keys())
+    values = list(search_dict.values())
+    if len(values) != len(list(dict.fromkeys(values))):
+        raise ValueError(f'{search_dict} does not contain unique values!')
+    else:
+        return keys[values.index(value)]
