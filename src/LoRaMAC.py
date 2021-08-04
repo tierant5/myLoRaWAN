@@ -4,6 +4,7 @@ from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
 from DataRate import DataRate
 from helpers import load_all_region_json, load_region_json
 from Radio import Radio
+from random import randint
 
 
 class LoRaMAC:
@@ -161,10 +162,8 @@ class LoRaMAC:
 
     def set_defaults(self, band, tx_channel, tx_power):
         self.band = band
-        if tx_channel is None:
-            pass
-        else:
-            self.tx_channel = tx_channel
+        rand_ch_index = randint(0, len(self.band.channel_list) - 1)
+        self.tx_channel = self.band.channel_list[rand_ch_index]
         self.tx_data_rate = self.tx_channel.data_rates[0]
         self.rx1droffset = self.default_rx1droffset
         # self.rx2_channel = self.default_rx2_frequency
@@ -697,7 +696,7 @@ class LoRaMAC:
                 self.__bands = {}
                 for key, value in bands.items():
                     band = get_enum(BAND, key)
-                    self.__bands[band] = Band(**value)
+                    self.__bands[band] = Band(band, **value)
             else:
                 raise ValueError(f"{self}.bands is not empty!")
         else:
