@@ -1,4 +1,4 @@
-from constants import KEYS, CHMASK, UPLINK, DOWNLINK, DR, BW, BAND
+from constants import BAND, BW, CHMASK, DOWNLINK, DR, KEYS, UPLINK
 from helpers import get_enum
 
 

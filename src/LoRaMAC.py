@@ -1,10 +1,11 @@
-from Channel import Channel, ChannelMaskCntl, Band
-from constants import (ACTIVATION, BW, CHMASK, CR, DEVCLASS, DR, KEYS, REGION,
-                       SF, TXPOWER, RADIO, BAND, DOWNLINK, UPLINK)
-from DataRate import DataRate
-from helpers import load_all_region_json, load_region_json, get_enum
-from Radio import Radio
 from random import randint
+
+from Channel import Band, Channel, ChannelMaskCntl
+from constants import (ACTIVATION, BAND, BW, CHMASK, CR, DEVCLASS, DOWNLINK,
+                       DR, KEYS, RADIO, REGION, SF, TXPOWER, UPLINK)
+from DataRate import DataRate
+from helpers import get_enum, load_all_region_json, load_region_json
+from Radio import Radio
 
 
 class LoRaMAC:

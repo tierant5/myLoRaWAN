@@ -1,6 +1,7 @@
 import json
 import os
-from constants import path_to_data, all_region_defaults_file
+
+from constants import all_region_defaults_file, path_to_data
 
 
 def load_json(json_filename: str):

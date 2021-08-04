@@ -1,6 +1,7 @@
-from enum import Enum, auto
-import Radio
 import os
+from enum import Enum, auto
+
+import Radio
 
 path_to_data = f'{os.getcwd()}/data'
 all_region_defaults_file = 'all_region_defaults.json'
