@@ -227,10 +227,13 @@ class Channel(object):
 class Band(object):
     """" Class to define a LoRa Band """
 
-    def __init__(self, **kwargs):
+    def __init__(self, band, **kwargs):
+        self.__band = None
         self.__min_channel = None
         self.__max_channel = None
         self.__channel_list = None
+
+        self.band = band
 
         for key, value in kwargs.items():
             if key == KEYS.BAND_MIN_CH.value:
@@ -246,6 +249,17 @@ class Band(object):
                     self.min_channel.value, self.max_channel.value + 1
                 )
             ]
+
+    @property
+    def band(self) -> BAND:
+        return self.__band
+
+    @band.setter
+    def band(self, band):
+        if isinstance(band, BAND):
+            self.__band = band
+        else:
+            raise TypeError
 
     @property
     def min_channel(self) -> UPLINK:
