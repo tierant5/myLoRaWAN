@@ -6,10 +6,6 @@ path_to_data = f'{os.getcwd()}/data'
 all_region_defaults_file = 'all_region_defaults.json'
 
 
-def get_enum(enum_class, enum_name):
-    return enum_class[enum_name]
-
-
 class REGION(Enum):
     AS923 = auto()
     AU915 = auto()
