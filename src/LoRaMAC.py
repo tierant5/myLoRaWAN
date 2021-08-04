@@ -9,7 +9,7 @@ from Radio import Radio
 
 
 class LoRaMAC:
-    """Class to define the LoRa MAC Layer"""
+    """Class to define the LoRaWAN MAC Layer"""
 
     def __init__(
         self,
@@ -170,6 +170,9 @@ class LoRaMAC:
         self.rx2_channel = self.default_rx2_channel
         self.rx2_data_rate = self.default_rx2_data_rate
         self.tx_power = TXPOWER.TXPOWER0
+        self.join_request_data_rate = self.join_request_data_rates[
+            self.tx_channel.bandwidth
+        ]
 
     ###########################################################################
     # Properties
