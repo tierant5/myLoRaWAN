@@ -19,8 +19,6 @@ class LoRaMAC:
         radio=RADIO.SX1276,
         tx_retries=1,
         band=BAND.BAND0,
-        tx_power=None,
-        public=False
     ):
 
         self.__preamble = None
