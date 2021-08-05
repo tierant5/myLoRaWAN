@@ -161,9 +161,8 @@ class LoRaMAC:
 
     def set_defaults(self, band):
         self.band = band
-        rand_ch_index = randint(0, len(self.band.channel_list) - 1)
-        self.tx_channel = self.band.channel_list[rand_ch_index]
-        self.tx_data_rate = self.tx_channel.data_rates[0]
+        self.tx_channel = self.get_random_tx_channel()
+        self.tx_data_rate = self.tx_channel.min_data_rate
         self.rx1droffset = self.default_rx1droffset
         self.rx2_channel = self.default_rx2_channel
         self.rx2_data_rate = self.default_rx2_data_rate
@@ -171,6 +170,10 @@ class LoRaMAC:
         self.join_request_data_rate = self.join_request_data_rates[
             self.tx_channel.bandwidth
         ]
+
+    def get_random_tx_channel(self):
+        rand_ch_index = randint(0, len(self.band.channel_list) - 1)
+        return self.band.channel_list[rand_ch_index]
 
     ###########################################################################
     # Properties
@@ -822,7 +825,7 @@ class LoRaMAC:
             if isinstance(rx1droffset, int):
                 if rx1droffset in self.allowed_rx1droffset:
                     self.__rx1droffset = rx1droffset
-                    self.rx1_data_rate = self.rx1droffset_table[self.tx_data_rate.datarate][rx1droffset]    # noqa: E501
+                    self.rx1_data_rate = self.rx1droffset_table[self.tx_data_rate.data_rate][rx1droffset]    # noqa: E501
                 else:
                     raise ValueError(f"{rx1droffset} is not an allowed rx1droffset")    # noqa: E501
             else:

@@ -5,8 +5,8 @@ from helpers import get_enum
 class DataRate(object):
     """ Class to define a DataRate for a region. """
 
-    def __init__(self, datarate: DR, params: dict):
-        self.__datarate = None
+    def __init__(self, data_rate: DR, params: dict):
+        self.__data_rate = None
         self.__dr_type = None
         self.__spreading_factor = None
         self.__bandwidth = None
@@ -15,7 +15,7 @@ class DataRate(object):
         self.__max_m_payload = None
         self.__max_n_payload = None
 
-        self.datarate = datarate
+        self.data_rate = data_rate
         for key, value in params.items():
             if key == KEYS.DR_TYPE.value:
                 self.dr_type = value
@@ -35,15 +35,15 @@ class DataRate(object):
                 raise KeyError
 
     @property
-    def datarate(self) -> DR:
-        return self.__datarate
+    def data_rate(self) -> DR:
+        return self.__data_rate
 
-    @datarate.setter
-    def datarate(self, datarate):
-        if isinstance(datarate, DR):
-            self.__datarate = datarate
-        elif isinstance(datarate, str):
-            self.__datarate = get_enum(DR, datarate)
+    @data_rate.setter
+    def data_rate(self, data_rate):
+        if isinstance(data_rate, DR):
+            self.__data_rate = data_rate
+        elif isinstance(data_rate, str):
+            self.__data_rate = get_enum(DR, data_rate)
         else:
             raise TypeError
 
