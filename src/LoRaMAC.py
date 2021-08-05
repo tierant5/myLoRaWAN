@@ -161,9 +161,9 @@ class LoRaMAC:
 
     def set_defaults(self, band):
         self.band = band
+        self.rx1droffset = self.default_rx1droffset
         self.tx_channel = self.get_random_tx_channel()
         self.tx_data_rate = self.tx_channel.min_data_rate
-        self.rx1droffset = self.default_rx1droffset
         self.rx2_channel = self.default_rx2_channel
         self.rx2_data_rate = self.default_rx2_data_rate
         self.tx_power = TXPOWER.TXPOWER0
@@ -174,6 +174,13 @@ class LoRaMAC:
     def get_random_tx_channel(self):
         rand_ch_index = randint(0, len(self.band.channel_list) - 1)
         return self.band.channel_list[rand_ch_index]
+
+    def update_rx1_data_rate(self):
+        self.rx1_data_rate = self.rx1droffset_table[self.tx_data_rate.data_rate][self.rx1droffset]    # noqa: E501
+
+    def update_rx1_channel(self):
+        rx_channel_num = self.tx_channel.channel.value % 8
+        self.rx1_channel = DOWNLINK(rx_channel_num)
 
     ###########################################################################
     # Properties
@@ -720,8 +727,7 @@ class LoRaMAC:
     def tx_channel(self, tx_channel):
         if isinstance(tx_channel, UPLINK):
             self.__tx_channel = self.uplink_channels[tx_channel]
-            rx_channel_num = tx_channel.value % 8
-            self.rx1_channel = DOWNLINK(rx_channel_num)
+            self.update_rx1_channel()
         else:
             raise TypeError
 
@@ -757,6 +763,7 @@ class LoRaMAC:
             if isinstance(tx_data_rate, DR):
                 if tx_data_rate in self.tx_channel.data_rates:
                     self.__tx_data_rate = self.data_rates[tx_data_rate]
+                    self.update_rx1_data_rate()
                 else:
                     raise ValueError(f"{tx_data_rate} not in allowed data rates for tx_channel")     # noqa: E501
             else:
@@ -821,17 +828,13 @@ class LoRaMAC:
 
     @rx1droffset.setter
     def rx1droffset(self, rx1droffset):
-        if self.tx_data_rate is not None:
-            if isinstance(rx1droffset, int):
-                if rx1droffset in self.allowed_rx1droffset:
-                    self.__rx1droffset = rx1droffset
-                    self.rx1_data_rate = self.rx1droffset_table[self.tx_data_rate.data_rate][rx1droffset]    # noqa: E501
-                else:
-                    raise ValueError(f"{rx1droffset} is not an allowed rx1droffset")    # noqa: E501
+        if isinstance(rx1droffset, int):
+            if rx1droffset in self.allowed_rx1droffset:
+                self.__rx1droffset = rx1droffset
             else:
-                raise TypeError
+                raise ValueError(f"{rx1droffset} is not an allowed rx1droffset")    # noqa: E501
         else:
-            raise ValueError(f"{self}.tx_data_rate is not set!")
+            raise TypeError
 
     @property
     def radio(self) -> Radio:
