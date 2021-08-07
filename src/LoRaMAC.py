@@ -1,7 +1,7 @@
 from random import randint
 
 from Channel import Band, Channel, ChannelMaskCntl
-from constants import (ACTIVATION, BAND, BW, CHMASK, CR, DEVCLASS, DOWNLINK,
+from constants import (ACTIVATION, BAND, BW, CHMASK, CR, DOWNLINK,
                        DR, KEYS, RADIO, REGION, SF, TXPOWER, UPLINK)
 from DataRate import DataRate
 from helpers import get_enum, load_all_region_json, load_region_json
@@ -14,7 +14,6 @@ class LoRaMAC:
     def __init__(
         self,
         region=REGION.US915,
-        device_class=DEVCLASS.CLASS_A,
         adr=False,
         radio=RADIO.SX1276,
         tx_retries=1,
@@ -105,7 +104,6 @@ class LoRaMAC:
         self.region = region
         self.adr = adr
         self.radio = radio
-        self.device_class = device_class
         self.tx_retries = tx_retries
         # TODO Check if previous settings are present
         self.load_defaults()
@@ -226,17 +224,6 @@ class LoRaMAC:
     def tx_retries(self, tx_retries: int):
         if isinstance(tx_retries, int):
             self.__tx_retries = tx_retries
-        else:
-            raise TypeError
-
-    @property
-    def device_class(self) -> DEVCLASS:
-        return self.__device_class
-
-    @device_class.setter
-    def device_class(self, device_class: DEVCLASS):
-        if isinstance(device_class, DEVCLASS):
-            self.__device_class = device_class
         else:
             raise TypeError
 
