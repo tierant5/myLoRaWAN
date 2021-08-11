@@ -41,7 +41,12 @@ class Device():
 
     def tx(self, tx_payload):
         max_tx_power_code = self.radio.dbm2code(self.radio.max_tx_power)
-        tx_power_code = self.radio.dbm2code(self.mac.tx_power)
+        if self.mac.tx_power < self.radio.min_tx_power:
+            tx_power_code = self.radio.dbm2code(self.radio.min_tx_power)
+        elif self.mac.tx_power > self.radio.max_tx_power:
+            tx_power_code = max_tx_power_code
+        else:
+            tx_power_code = self.radio.dbm2code(self.mac.tx_power)
         self.clear_irq_flags(RxDone=1)
         self.set_mode(self.get_radio_mode(MODE.SLEEP))
         self.set_dio_mapping([1, 0, 0, 0, 0, 0])
