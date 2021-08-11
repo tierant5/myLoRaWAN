@@ -188,18 +188,23 @@ class ClassC(Device):
 
     def setup_rx1_timeout(self):
         """ Override Class A Timeout """
-        self.setup_rx_timeout()
+        self.setup_rxc()
 
     def setup_rx2_timeout(self):
         """ Override Class A Timeout """
-        self.setup_rx_timeout()
+        self.setup_rxc()
 
-    def setup_rx_timeout(self):
+    def setup_rxc(self):
         self.rx(
             channel=self.mac.rx2_channel,
             data_rate=self.mac.rx2_data_rate,
             mode=MODE.RXCONT
         )
+
+    def on_tx_done(self):
+        self.clear_irq_flags(TxDone=1)
+        self.setup_rxc()
+        asyncio.run(self.async_start_rx_delays())
 
 
 if __name__ == '__main__':
