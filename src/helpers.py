@@ -15,7 +15,7 @@ def load_json(json_filename: str):
         raise FileNotFoundError(f'Could not find {json_filename}')
 
 
-def get_region_filename(region):
+def get_enum_filename(region):
     return f'{region.name}.json'
 
 
@@ -24,13 +24,19 @@ def get_relative_path(path, filename):
 
 
 def load_region_json(region):
-    region_filename = get_region_filename(region)
+    region_filename = get_enum_filename(region)
     path = get_relative_path(path_to_data, region_filename)
     return load_json(path)
 
 
 def load_all_region_json():
     path = get_relative_path(path_to_data, all_region_defaults_file)
+    return load_json(path)
+
+
+def load_radio_json(radio):
+    radio_filename = get_enum_filename(radio)
+    path = get_relative_path(path_to_data, radio_filename)
     return load_json(path)
 
 

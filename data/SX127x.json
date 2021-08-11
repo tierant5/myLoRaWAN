@@ -1,0 +1,42 @@
+{
+    "bw": {
+        "BW_125KHZ": 7,
+        "BW_250KHZ": 8,
+        "BW_500KHZ": 9
+    },
+    "mode": {
+        "SLEEP": 128,
+        "STDBY": 129,
+        "FSTX": 130,
+        "TX": 131,
+        "FSRX": 132,
+        "RXCONT": 133,
+        "RXSINGLE": 134,
+        "CAD": 135,
+        "FSK_STDBY": 1
+    },
+    "coding_rate": {
+        "CR_4_5": 1,
+        "CR_4_6": 2,
+        "CR_4_7": 3,
+        "CR_4_8": 4
+    },
+    "irq": {
+        "RXTIMEOUT": 7,
+        "RXDONE": 6,
+        "PAYLOADCRCERROR": 5,
+        "VALIDHEADER": 4,
+        "TXDONE": 3,
+        "CADDONE": 2,
+        "FHSSCHANGECHANNEL": 1,
+        "CADDETECTED": 0
+    },
+    "sf": {
+        "SF7": 7,
+        "SF8": 8,
+        "SF9": 9,
+        "SF10": 10,
+        "SF11": 11,
+        "SF12": 12
+    }
+}
