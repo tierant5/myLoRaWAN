@@ -2,6 +2,7 @@
 from constants import DEVCLASS, MODE
 from LoRaMAC import LoRaMAC
 from Radio import Radio, SX127X
+import asyncio
 
 
 class Device():
@@ -13,10 +14,15 @@ class Device():
         self.__mac = None
         self.__radio = None
 
+        self.delay1 = None
+        self.delay2 = None
+
         self.mac = mac
         self.radio = radio
 
     def on_rx_done(self):
+        if (self.delay2 is not None):
+            self.delay2.cancel()
         self.rx1_timeout = False
         self.rx2_timeout = False
         self.clear_irq_flags(RxDone=1)
@@ -36,8 +42,7 @@ class Device():
 
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
-        self.setup_rx1()
-        pass
+        asyncio.run(self.async_start_rx_delays())
 
     def tx(self, tx_payload):
         max_tx_power_code = self.radio.dbm2code(self.radio.max_tx_power)
@@ -94,6 +99,22 @@ class Device():
             data_rate=self.mac.rx2_data_rate,
             mode=MODE.RXSINGLE
         )
+
+    async def async_start_rx_delays(self):
+        self.delay1 = asyncio.create_task(self.async_rx1_delay())
+        self.delay2 = asyncio.create_task(self.async_rx2_delay())
+        await asyncio.gather(self.delay1, self.delay2)
+
+    async def async_rx1_delay(self):
+        await asyncio.sleep(self.mac.rx_delay1)
+        self.setup_rx1()
+
+    async def async_rx2_delay(self):
+        try:
+            await asyncio.sleep(self.mac.rx_delay2)
+            self.setup_rx2()
+        except asyncio.CancelledError:
+            pass
 
     def setup_rx1_timeout(self):
         self.set_mode(self.get_radio_mode(MODE.STDBY))
