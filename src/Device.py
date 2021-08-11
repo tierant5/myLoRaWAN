@@ -40,6 +40,8 @@ class Device():
         pass
 
     def tx(self, tx_payload):
+        max_tx_power_code = self.radio.dbm2code(self.radio.max_tx_power)
+        tx_power_code = self.radio.dbm2code(self.mac.tx_power)
         self.clear_irq_flags(RxDone=1)
         self.set_mode(self.get_radio_mode(MODE.SLEEP))
         self.set_dio_mapping([1, 0, 0, 0, 0, 0])
@@ -48,7 +50,10 @@ class Device():
         self.set_spreading_factor(
             self.get_radio_sf(self.mac.tx_data_rate.spreading_factor)
         )
-        self.set_pa_config(max_power=0x0F, output_power=0x0E)
+        self.set_pa_config(
+            max_power=max_tx_power_code,
+            output_power=tx_power_code
+        )
         self.set_sync_word(0x34)
         self.set_rx_crc(True)
         self.set_invert_iq(0)
