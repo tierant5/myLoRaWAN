@@ -148,6 +148,7 @@ class SX127X(Radio):
         self.radio = RADIO.SX127X
         self.offset = 10.8
         self.step = 0.6
+        self.freq_scale = 1e6
 
         self.load_parameters()
 
