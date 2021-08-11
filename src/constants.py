@@ -1,9 +1,7 @@
 import os
 from enum import Enum, auto
 
-import Radio
-
-path_to_data = f'{os.getcwd()}/data'
+path_to_data = f'{os.getcwd()}/data'.replace('src/data', 'data')
 all_region_defaults_file = 'all_region_defaults.json'
 
 
@@ -16,23 +14,19 @@ class REGION(Enum):
     IN865 = auto()
 
 
-class RADIO(Enum):
-    SX1276 = Radio.SX127X()
-
-
 class BW(Enum):
-    BW_125KHZ = 7
-    BW_250KHZ = 8
-    BW_500KHZ = 9
+    BW_125KHZ = auto()
+    BW_250KHZ = auto()
+    BW_500KHZ = auto()
 
 
 class SF(Enum):
-    SF7 = 7
-    SF8 = 8
-    SF9 = 9
-    SF10 = 10
-    SF11 = 11
-    SF12 = 12
+    SF7 = auto()
+    SF8 = auto()
+    SF9 = auto()
+    SF10 = auto()
+    SF11 = auto()
+    SF12 = auto()
 
 
 class CR(Enum):
@@ -42,16 +36,37 @@ class CR(Enum):
     CR_4_8 = auto()
 
 
-class POWERMODE(Enum):
-    ALWAYS_ON = auto()
-    TX_ONLY = auto()
+class MODE(Enum):
     SLEEP = auto()
+    STDBY = auto()
+    FSTX = auto()
+    TX = auto()
+    FSRX = auto()
+    RXCONT = auto()
+    RXSINGLE = auto()
+    CAD = auto()
+    FSK_STDBY = auto()
+
+
+class IRQ(Enum):
+    RXTIMEOUT = auto()
+    RXDONE = auto()
+    PAYLOADCRCERROR = auto()
+    VALIDHEADER = auto()
+    TXDONE = auto()
+    CADDONE = auto()
+    FHSSCHANGECHANNEL = auto()
+    CADDETECTE = auto()
 
 
 class DEVCLASS(Enum):
     CLASS_A = auto()
     CLASS_B = auto()
     CLASS_C = auto()
+
+
+class RADIO(Enum):
+    SX127X = auto()
 
 
 class ACTIVATION(Enum):
@@ -266,3 +281,8 @@ class KEYS(Enum):
     BANDS = 'bands'
     BAND_MIN_CH = 'min_channel'
     BAND_MAX_CH = 'max_channel'
+    RADIO_BW = 'bw'
+    RADIO_MODE = 'mode'
+    RADIO_CODING_RATE = 'coding_rate'
+    RADIO_IRQ = 'irq'
+    RADIO_SF = 'sf'

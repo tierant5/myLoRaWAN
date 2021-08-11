@@ -2,10 +2,9 @@ from random import randint
 
 from Channel import Band, Channel, ChannelMaskCntl
 from constants import (ACTIVATION, BAND, BW, CHMASK, CR, DOWNLINK,
-                       DR, KEYS, RADIO, REGION, SF, TXPOWER, UPLINK)
+                       DR, KEYS, REGION, SF, TXPOWER, UPLINK)
 from DataRate import DataRate
 from helpers import get_enum, load_all_region_json, load_region_json
-from Radio import Radio
 
 
 class LoRaMAC:
@@ -15,7 +14,6 @@ class LoRaMAC:
         self,
         region=REGION.US915,
         adr=False,
-        radio=RADIO.SX1276,
         tx_retries=1,
         band=BAND.BAND0,
     ):
@@ -33,7 +31,6 @@ class LoRaMAC:
         self.__uplink_dwell_time = None
         self.__cflist_type_supported = None
         self.__max_eirp = None
-        self.__radio = None
 
         # Device Params
         self.__region = None
@@ -103,7 +100,6 @@ class LoRaMAC:
         # Set self.****
         self.region = region
         self.adr = adr
-        self.radio = radio
         self.tx_retries = tx_retries
         # TODO Check if previous settings are present
         self.load_defaults()
@@ -822,17 +818,6 @@ class LoRaMAC:
                 raise ValueError(f"{rx1droffset} is not an allowed rx1droffset")    # noqa: E501
         else:
             raise TypeError
-
-    @property
-    def radio(self) -> Radio:
-        return self.__radio
-
-    @radio.setter
-    def radio(self, radio):
-        if isinstance(radio, RADIO):
-            self.__radio = radio.value
-        else:
-            TypeError
 
     @property
     def band(self) -> Band:
