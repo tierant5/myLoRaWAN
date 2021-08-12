@@ -22,12 +22,11 @@ class Device():
         self.radio = radio
 
     def on_rx_done(self):
-        if self.rx_mode == RXMODE.RX1:
-            if (self.delay2 is not None):
-                self.delay2.cancel()
+        if self.rx_mode in [RXMODE.RX1, RXMODE.RX2]:
             self.rx1_timeout = False
-        elif self.rx_mode == RXMODE.RX2:
             self.rx2_timeout = False
+            if (self.delay2 is not None) and (self.rx_mode == RXMODE.RX1):
+                self.delay2.cancel()
         self.clear_irq_flags(RxDone=1)
         self.rx_payload = self.read_payload(nocheck=True)
         self.set_mode(self.get_radio_mode(self.rx2_timeout_mode))
