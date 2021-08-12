@@ -14,6 +14,7 @@ class Device(LoRa):
         self.__mac = None
         self.__radio = None
         self.__rx_mode = None
+        self.__rx_done_mode = None
 
         self.delay1 = None
         self.delay2 = None
@@ -29,7 +30,7 @@ class Device(LoRa):
                 self.delay2.cancel()
         self.clear_irq_flags(RxDone=1)
         self.rx_payload = self.read_payload(nocheck=True)
-        self.set_mode(self.get_radio_mode(self.rx2_timeout_mode))
+        self.setup_rx_done()
 
     def on_rx_timeout(self):
         self.clear_irq_flags(RxTimeout=1)
@@ -104,6 +105,9 @@ class Device(LoRa):
             data_rate=self.mac.rx2_data_rate,
             mode=MODE.RXSINGLE
         )
+
+    def setup_rx_done(self):
+        self.set_mode(self.get_radio_mode(MODE.SLEEP))
 
     async def async_start_rx_delays(self):
         self.delay1 = asyncio.create_task(self.async_rx1_delay())
@@ -224,6 +228,9 @@ class ClassC(Device):
         self.clear_irq_flags(TxDone=1)
         self.setup_rxc()
         asyncio.run(self.async_start_rx_delays())
+
+    def setup_rx_done(self):
+        self.setup_rxc()
 
 
 if __name__ == '__main__':
