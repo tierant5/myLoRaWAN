@@ -48,6 +48,13 @@ class MODE(Enum):
     FSK_STDBY = auto()
 
 
+class RXMODE(Enum):
+    RX1 = auto()
+    RX2 = auto()
+    RXC = auto()
+    OFF = auto()
+
+
 class IRQ(Enum):
     RXTIMEOUT = auto()
     RXDONE = auto()

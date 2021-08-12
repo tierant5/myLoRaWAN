@@ -1,5 +1,5 @@
 # from SX127x import LoRa
-from constants import DEVCLASS, MODE
+from constants import DEVCLASS, MODE, RXMODE
 from LoRaMAC import LoRaMAC
 from Radio import Radio, SX127X
 import asyncio
@@ -13,6 +13,7 @@ class Device():
         self.__device_class = None
         self.__mac = None
         self.__radio = None
+        self.__rx_mode = None
 
         self.delay1 = None
         self.delay2 = None
@@ -21,17 +22,19 @@ class Device():
         self.radio = radio
 
     def on_rx_done(self):
-        if (self.delay2 is not None):
-            self.delay2.cancel()
-        self.rx1_timeout = False
-        self.rx2_timeout = False
+        if self.rx_mode == RXMODE.RX1:
+            if (self.delay2 is not None):
+                self.delay2.cancel()
+            self.rx1_timeout = False
+        elif self.rx_mode == RXMODE.RX2:
+            self.rx2_timeout = False
         self.clear_irq_flags(RxDone=1)
         self.rx_payload = self.read_payload(nocheck=True)
         self.set_mode(self.get_radio_mode(self.rx2_timeout_mode))
 
     def on_rx_timeout(self):
         self.clear_irq_flags(RxTimeout=1)
-        if not self.rx1_timeout:
+        if self.rx_mode == RXMODE.RX1:
             self.rx1_timeout = True
             self.rx2_timeout = False
             self.setup_rx1_timeout()
@@ -45,6 +48,7 @@ class Device():
         asyncio.run(self.async_start_rx_delays())
 
     def tx(self, tx_payload):
+        self.rx_mode = RXMODE.OFF
         max_tx_power_code = self.radio.dbm2code(self.radio.max_tx_power)
         if self.mac.tx_power < self.radio.min_tx_power:
             tx_power_code = self.radio.dbm2code(self.radio.min_tx_power)
@@ -87,6 +91,7 @@ class Device():
         self.set_mode(self.get_radio_mode(mode))
 
     def setup_rx1(self):
+        self.rx_mode = RXMODE.RX1
         self.rx(
             channel=self.mac.rx1_channel,
             data_rate=self.mac.rx1_data_rate,
@@ -94,6 +99,7 @@ class Device():
         )
 
     def setup_rx2(self):
+        self.rx_mode = RXMODE.RX2
         self.rx(
             channel=self.mac.rx2_channel,
             data_rate=self.mac.rx2_data_rate,
@@ -117,9 +123,11 @@ class Device():
             pass
 
     def setup_rx1_timeout(self):
+        self.rx_mode = RXMODE.OFF
         self.set_mode(self.get_radio_mode(MODE.STDBY))
 
     def setup_rx2_timeout(self):
+        self.rx_mode = RXMODE.OFF
         self.set_mode(self.get_radio_mode(MODE.SLEEP))
 
     def get_radio_mode(self, mode):
@@ -170,6 +178,17 @@ class Device():
         else:
             raise TypeError
 
+    @property
+    def rx_mode(self) -> RXMODE:
+        return self.__rx_mode
+
+    @rx_mode.setter
+    def rx_mode(self, rx_mode):
+        if isinstance(rx_mode, RXMODE):
+            self.__rx_mode = rx_mode
+        else:
+            raise TypeError
+
 
 class ClassA(Device):
     """ Class to define LoRaWAN Class A Device """
@@ -195,6 +214,7 @@ class ClassC(Device):
         self.setup_rxc()
 
     def setup_rxc(self):
+        self.rx_mode = RXMODE.RXC
         self.rx(
             channel=self.mac.rx2_channel,
             data_rate=self.mac.rx2_data_rate,
