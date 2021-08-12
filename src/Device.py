@@ -1,15 +1,15 @@
-# from SX127x import LoRa
+from SX127x import LoRa
 from constants import DEVCLASS, MODE, RXMODE
 from LoRaMAC import LoRaMAC
 from Radio import Radio, SX127X
 import asyncio
 
 
-class Device():
+class Device(LoRa):
     """ Base Class of LoRaWAN Device """
 
     def __init__(self, mac, radio=SX127X()):
-        # super(Device, self).__init__()
+        super(Device, self).__init__()
         self.__device_class = None
         self.__mac = None
         self.__radio = None
