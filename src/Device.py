@@ -14,7 +14,6 @@ class Device(LoRa):
         self.__mac = None
         self.__radio = None
         self.__rx_mode = None
-        self.__rx_done_mode = None
 
         self.delay1 = None
         self.delay2 = None
