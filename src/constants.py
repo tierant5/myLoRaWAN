@@ -256,6 +256,10 @@ class FTYPE(Enum):
     CONFDATADOWN = 0b101
 
 
+class MAJOR(Enum):
+    LORAWANR1 = 0b00
+
+
 class KEYS(Enum):
     RECEIVE_DELAY1 = 'receive_delay1'
     RECEIVE_DELAY2 = 'receive_delay2'
