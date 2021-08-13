@@ -24,6 +24,13 @@ class Header:
     """ Define a generic header. """
 
 
+class LoRaPacket:
+    """ Define a LoRa Packet. """
+
+    def __init__(self):
+        pass
+
+
 class PHYPayload:
     """ Define a LoRaWAN Physical Payload. """
 
