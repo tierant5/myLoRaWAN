@@ -247,6 +247,15 @@ class CID(Enum):
     DEVICETIME = 0x0D
 
 
+class MTYPE(Enum):
+    JOINREQUEST = 0b000
+    JOINACCEPT = 0b001
+    UNCONFDATAUP = 0b010
+    UNCONFDATADOWN = 0b011
+    CONFDATAUP = 0b100
+    CONFDATADOWN = 0b101
+
+
 class KEYS(Enum):
     RECEIVE_DELAY1 = 'receive_delay1'
     RECEIVE_DELAY2 = 'receive_delay2'
