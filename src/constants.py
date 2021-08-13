@@ -234,6 +234,19 @@ class BAND(Enum):
     BAND7 = 7
 
 
+class CID(Enum):
+    LINKCHECK = 0x02
+    LINKADR = 0x03
+    DUTYCYCLE = 0x04
+    RXPARAMSETUP = 0x05
+    DEVSTATUS = 0x06
+    NEWCHANNEL = 0x07
+    RXTIMINGSETUP = 0x08
+    TXPARAMSETUP = 0x09
+    DLCHANNEL = 0x0A
+    DEVICETIME = 0x0D
+
+
 class KEYS(Enum):
     RECEIVE_DELAY1 = 'receive_delay1'
     RECEIVE_DELAY2 = 'receive_delay2'
