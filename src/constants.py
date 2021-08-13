@@ -247,7 +247,7 @@ class CID(Enum):
     DEVICETIME = 0x0D
 
 
-class MTYPE(Enum):
+class FTYPE(Enum):
     JOINREQUEST = 0b000
     JOINACCEPT = 0b001
     UNCONFDATAUP = 0b010
