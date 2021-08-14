@@ -223,6 +223,11 @@ class TXParamSetupAns(MACCommand):
 class FOpts:
     """ Define a Frame Options Class. """
 
+    def __init__(self, fopts, ftype):
+        self.__fopts = None
+        self.__ftype = None
+        self.__mac_commands = []
+
 
 class FCtrl:
     """ Define a base FCtrl Class"""
