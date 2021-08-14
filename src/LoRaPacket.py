@@ -34,7 +34,190 @@ class MACCommand:
 
     def __init__(self):
         self.__cid = None
-        self.__data = None
+
+    @property
+    def cid(self) -> CID:
+        return self.__cid
+
+    @cid.setter
+    def cid(self, cid):
+        if isinstance(cid, int):
+            self.__cid = CID(cid)
+        elif isinstance(cid, CID):
+            self.__cid = cid
+        else:
+            raise TypeError
+
+
+class LinkCheckReq(MACCommand):
+    """ Define a Link Check Request MAC Command. """
+
+    def __init__(self, *args):
+        super(LinkCheckReq, self).__init__(*args)
+
+
+class LinkCheckAns(MACCommand):
+    """ Define a Link Check Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(LinkCheckAns, self).__init__(*args)
+        self.__margin = None
+        self.__gwcnt = None
+
+
+class LinkADRReq(MACCommand):
+    """ Define a Link ADR Request MAC Command. """
+
+    def __init__(self, *args):
+        super(LinkADRReq, self).__init__(*args)
+        self.__datarate_txpower = None
+        self.__datarate = None
+        self.__txpower = None
+        self.__chmask = None
+        self.__redundancy = None
+        self.__chmaskcntl = None
+        self.__nbtrans = None
+
+
+class LinkADRAns(MACCommand):
+    """ Define a Link ADR Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(LinkADRAns, self).__init__(*args)
+        self.__status = None
+        self.__powerack = None
+        self.__datarateack = None
+        self.__channelmaskack = None
+
+
+class DutyCycleReq(MACCommand):
+    """ Define an End-Device Transmit Duty Cycle Request MAC Command. """
+
+    def __init__(self, *args):
+        super(DutyCycleReq, self).__init__(*args)
+        self.__dutycyclepl = None
+        self.__maxdutycycle = None
+
+
+class DutyCycleAns(MACCommand):
+    """ Define an End-Device Transmit Duty Cycle Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(DutyCycleAns, self).__init__(*args)
+
+
+class RXParamSetupReq(MACCommand):
+    """ Define a Recieve Windows Parameters Request MAC Command. """
+
+    def __init__(self, *args):
+        super(RXParamSetupReq, self).__init__(*args)
+        self.__dlsettings = None
+        self.__frequency = None
+        self.__rx1droffset = None
+        self.__rx2datarate = None
+
+
+class RXParamSetupAns(MACCommand):
+    """ Define a Recieve Windows Parameters Ansswer MAC Command. """
+
+    def __init__(self, *args):
+        super(RXParamSetupAns, self).__init__(*args)
+        self.__status = None
+        self.__rx1droffsetack = None
+        self.__rx2datarateack = None
+        self.__channelack = None
+
+
+class DevStatusReq(MACCommand):
+    """ Define an End-Device Status Request MAC Command. """
+
+    def __init__(self, *args):
+        super(DevStatusReq, self).__init__(*args)
+
+
+class DevStatusAns(MACCommand):
+    """ Define an End-Device Status Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(DevStatusAns, self).__init__(*args)
+        self.__battery = None
+        self.__radiostatus = None
+        self.__snr = None
+
+
+class NewChannelReq(MACCommand):
+    """ Define a Creation of a Channel Request MAC Command. """
+
+    def __init__(self, *args):
+        super(NewChannelReq, self).__init__(*args)
+        self.__chindex = None
+        self.__frequency = None
+        self.__drrange = None
+        self.__maxdr = None
+        self.__mindr = None
+
+
+class NewChannelAns(MACCommand):
+    """ Define a Creation of a Channel Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(NewChannelAns, self).__init__(*args)
+        self.__status = None
+        self.__datarate_range_ok = None
+        self.__channel_frequency_ok = None
+
+
+class DLChannelReq(MACCommand):
+    """ Define a Modification of a Channel Request MAC Command. """
+
+    def __init__(self, *args):
+        super(DLChannelReq, self).__init__(*args)
+        self.__chindex = None
+        self.__frequency = None
+
+
+class DLChannelAns(MACCommand):
+    """ Define a Modification of a Channel Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(DLChannelAns, self).__init__(*args)
+        self.__status = None
+        self.__uplink_frequency_exists = None
+        self.__channel_frequency_ok = None
+
+
+class RXTimingSetupReq(MACCommand):
+    """ Define a Setting Delay between TX and RX Request MAC Command. """
+
+    def __init__(self, *args):
+        super(RXTimingSetupReq, self).__init__(*args)
+        self.__rxtimingsettings = None
+        self.__del = None
+
+
+class RXTimingSetupAns(MACCommand):
+    """ Define a Setting Delay between TX and RX Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(RXTimingSetupAns, self).__init__(*args)
+
+
+class TXParamSetupReq(MACCommand):
+    """ Define an End-Device Transmit Parameters Request MAC Command. """
+
+    def __init__(self, *args):
+        super(TXParamSetupReq, self).__init__(*args)
+        self.__eirp_dwelltime = None
+        self.__downlinkdwelltime = None
+        self.__uplinkdwelltime = None
+        self.__maxeirp = None
+
+
+class TXParamSetupAns(MACCommand):
+    """ Define an End-Device Transmit Parameters Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(TXParamSetupAns, self).__init__(*args)
 
 
 class FOpts:
