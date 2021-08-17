@@ -284,13 +284,13 @@ class FHDR:
     def fctrl(self, fctrl):
         if isinstance(fctrl, int):
             if self.ftype == FTYPE.UNCONFDATAUP:
-                self.__fctrl = FCtrl_Uplink(fctrl, ack=True)
-            elif self.ftype == FTYPE.CONFDATAUP:
                 self.__fctrl = FCtrl_Uplink(fctrl, ack=False)
+            elif self.ftype == FTYPE.CONFDATAUP:
+                self.__fctrl = FCtrl_Uplink(fctrl, ack=True)
             if self.ftype == FTYPE.UNCONFDATADOWN:
-                self.__fctrl = FCtrl_Downlink(fctrl, ack=True)
-            elif self.ftype == FTYPE.CONFDATADOWN:
                 self.__fctrl = FCtrl_Downlink(fctrl, ack=False)
+            elif self.ftype == FTYPE.CONFDATADOWN:
+                self.__fctrl = FCtrl_Downlink(fctrl, ack=True)
             else:
                 raise ValueError
         else:
