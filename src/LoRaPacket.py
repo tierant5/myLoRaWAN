@@ -213,12 +213,72 @@ class LinkADRReq(MACCommand):
 class LinkADRAns(MACCommand):
     """ Define a Link ADR Answer MAC Command. """
 
-    def __init__(self, *args):
+    def __init__(
+            self, powerack=False, datarateack=False,
+            channelmaskack=False, *args
+    ):
         super(LinkADRAns, self).__init__(*args)
         self.__status = None
         self.__powerack = None
         self.__datarateack = None
         self.__channelmaskack = None
+
+        self.powerack = powerack
+        self.datarateack = datarateack
+        self.channelmaskack = channelmaskack
+
+        self.compose()
+
+    def compose(self):
+        status = int(self.powerack) << 2
+        status = status | int(self.datarateack) << 1
+        status = status | int(self.channelmaskack)
+        self.status = status
+        self.data = self.status
+
+    @property
+    def status(self) -> int:
+        return self.__status
+
+    @status.setter
+    def status(self, status):
+        if isinstance(status, int):
+            self.__status = status
+        else:
+            raise TypeError
+
+    @property
+    def powerack(self, powerack) -> bool:
+        return self.__powerack
+
+    @powerack.setter
+    def powerack(self, powerack):
+        if isinstance(powerack, bool):
+            self.__powerack = powerack
+        else:
+            raise TypeError
+
+    @property
+    def datarateack(self, datarateack) -> bool:
+        return self.__datarateack
+
+    @datarateack.setter
+    def datarateack(self, datarateack):
+        if isinstance(datarateack, bool):
+            self.__datarateack = datarateack
+        else:
+            raise TypeError
+
+    @property
+    def channelmaskack(self, channelmaskack) -> bool:
+        return self.__channelmaskack
+
+    @channelmaskack.setter
+    def channelmaskack(self, channelmaskack):
+        if isinstance(channelmaskack, bool):
+            self.__channelmaskack = channelmaskack
+        else:
+            raise TypeError
 
 
 class DutyCycleReq(MACCommand):
