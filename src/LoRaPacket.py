@@ -34,7 +34,6 @@ class MACCommand:
 
     def __init__(self):
         self.__cid = None
-        self.__payload = None
         self.__data = None
 
     @property
@@ -69,6 +68,36 @@ class LinkCheckAns(MACCommand):
         super(LinkCheckAns, self).__init__(*args)
         self.__margin = None
         self.__gwcnt = None
+        self.decompose()
+
+    def decompose(self):
+        if self.data is not None:
+            self.margin = int.from_bytes(self.data[0:1], byteorder='big')
+            self.gwcnt = int.from_bytes(self.data[1:2], byteorder='big')
+        else:
+            raise ValueError
+
+    @property
+    def margin(self) -> int:
+        return self.__margin
+
+    @margin.setter
+    def margin(self, margin):
+        if isinstance(margin, int):
+            self.__margin = margin
+        else:
+            raise TypeError
+
+    @property
+    def gwcnt(self) -> int:
+        return self.__gwcnt
+
+    @gwcnt.setter
+    def gwcnt(self, gwcnt):
+        if isinstance(gwcnt, int):
+            self.__gwcnt = gwcnt
+        else:
+            raise TypeError
 
 
 class LinkADRReq(MACCommand):
@@ -83,6 +112,7 @@ class LinkADRReq(MACCommand):
         self.__redundancy = None
         self.__chmaskcntl = None
         self.__nbtrans = None
+        self.decompose()
 
     def decompose(self):
         if self.data is not None:
