@@ -294,10 +294,40 @@ class LinkADRAns(MACCommand):
 class DutyCycleReq(MACCommand):
     """ Define an End-Device Transmit Duty Cycle Request MAC Command. """
 
-    def __init__(self, *args):
+    def __init__(self, maxdutycycle, *args):
         super(DutyCycleReq, self).__init__(*args)
         self.__dutycyclepl = None
         self.__maxdutycycle = None
+
+        self.maxdutycycle = maxdutycycle
+
+        self.compose()
+
+    def compose(self):
+        self.dutycyclepl = self.maxdutycycle
+        self.data = self.dutycyclepl
+
+    @property
+    def dutycyclepl(self) -> int:
+        return self.__dutycyclepl
+
+    @dutycyclepl.setter
+    def dutycyclepl(self, dutycyclepl):
+        if isinstance(dutycyclepl, int):
+            self.__dutycyclepl = dutycyclepl
+        else:
+            raise TypeError
+
+    @property
+    def maxdutycycle(self) -> int:
+        return self.__maxdutycycle
+
+    @maxdutycycle.setter
+    def maxdutycycle(self, maxdutycycle):
+        if isinstance(maxdutycycle, int):
+            self.__maxdutycycle = maxdutycycle
+        else:
+            raise TypeError
 
 
 class DutyCycleAns(MACCommand):
