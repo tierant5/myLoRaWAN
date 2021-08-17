@@ -53,6 +53,16 @@ class MACCommand:
     def data(self) -> bytes:
         return self.__data
 
+    @data.setter
+    def data(self, data):
+        if isinstance(data, int):
+            self.__data = data.to_bytes(
+                data.bit_length() + 7 // 8,
+                byteorder='big'
+            )
+        else:
+            raise TypeError
+
 
 class LinkCheckReq(MACCommand):
     """ Define a Link Check Request MAC Command. """
