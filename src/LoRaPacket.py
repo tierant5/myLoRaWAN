@@ -1,13 +1,13 @@
-from constants import FTYPE, CID, MAJOR
+from constants import FTYPE, CID, MAJOR, DR, TXPOWER, CHMASK
 
 
 class Field:
     """ Define a generic field. """
 
     def __init__(self, name: str):
-        self._name = None
-        self._default_value = None
-        self._size = None
+        self.__name = None
+        self.__default_value = None
+        self.__size = None
 
 
 class BitField(Field):
@@ -34,6 +34,8 @@ class MACCommand:
 
     def __init__(self):
         self.__cid = None
+        self.__payload = None
+        self.__data = None
 
     @property
     def cid(self) -> CID:
@@ -47,6 +49,10 @@ class MACCommand:
             self.__cid = cid
         else:
             raise TypeError
+
+    @property
+    def data(self) -> bytes:
+        return self.__data
 
 
 class LinkCheckReq(MACCommand):
@@ -77,6 +83,101 @@ class LinkADRReq(MACCommand):
         self.__redundancy = None
         self.__chmaskcntl = None
         self.__nbtrans = None
+
+    def decompose(self):
+        if self.data is not None:
+            self.datarate_txpower = int.from_bytes(self.data[0:1], byteorder='big')     # noqa: E501
+            self.chmask = int.from_bytes(self.data[1:3], byteorder='big')
+            self.redundancy = int.from_bytes(self.data[3:4], byteorder='big')
+        else:
+            raise ValueError
+
+    @property
+    def datarate_txpower(self):
+        return self.__datarate_txpower
+
+    @datarate_txpower.setter
+    def datarate_txpower(self, datarate_txpower):
+        if isinstance(datarate_txpower, int):
+            self.__datarate_txpower = datarate_txpower
+            self.datarate = (datarate_txpower & 0b11110000) >> 4
+            self.txpower = (datarate_txpower & 0b00001111)
+        else:
+            raise TypeError
+
+    @property
+    def datarate(self) -> DR:
+        return self.__datarate
+
+    @datarate.setter
+    def datarate(self, datarate):
+        if isinstance(datarate, int):
+            self.__datarate = DR(datarate)
+        elif isinstance(datarate, DR):
+            self.__datarate = datarate
+        else:
+            raise TypeError
+
+    @property
+    def txpower(self) -> TXPOWER:
+        return self.__txpower
+
+    @txpower.setter
+    def txpower(self, txpower):
+        if isinstance(txpower, int):
+            self.__txpower = TXPOWER(txpower)
+        elif isinstance(txpower, TXPOWER):
+            self.__txpower = txpower
+        else:
+            raise TypeError
+
+    @property
+    def chmask(self) -> int:
+        return self.__chmask
+
+    @chmask.setter
+    def chmask(self, chmask):
+        if isinstance(chmask, int):
+            self.__chmask = chmask
+        else:
+            raise TypeError
+
+    @property
+    def redundancy(self) -> int:
+        return self.__redundancy
+
+    @redundancy.setter
+    def redundancy(self, redundancy):
+        if isinstance(redundancy, int):
+            self.__redundancy = redundancy
+            self.chmaskcntl = (redundancy & 0b01110000) >> 4
+            self.nbtrans = (redundancy & 0b00001111)
+        else:
+            raise TypeError
+
+    @property
+    def chmaskcntl(self) -> CHMASK:
+        return self.__chmaskcntl
+
+    @chmaskcntl.setter
+    def chmaskcntl(self, chmaskcntl):
+        if isinstance(chmaskcntl, int):
+            self.__chmaskcntl = CHMASK(chmaskcntl)
+        elif isinstance(chmaskcntl, CHMASK):
+            self.__chmaskcntl = chmaskcntl
+        else:
+            raise TypeError
+
+    @property
+    def nbtrans(self) -> int:
+        return self.__nbtrans
+
+    @nbtrans.setter
+    def nbtrans(self, nbtrans):
+        if isinstance(nbtrans, int):
+            self.__nbtrans = nbtrans
+        else:
+            raise TypeError
 
 
 class LinkADRAns(MACCommand):
