@@ -778,10 +778,12 @@ class FHDR(Field):
     def decompose(self):
         self.devaddr = self.data_list[:4]
         self.fctrl = self.data_list[4:5]
+        self.fctrl.decompose()
         self.fcnt = int.from_bytes(self.data[5:7], byteorder='big')
         self.data = self.data_list[:7 + self.fcnt.foptslen]
         if self.fctrl.foptslen != 0:
             self.fopts = self.data_list[-self.fctrl.foptslen:]
+            self.fopts.decompose()
 
     @property
     def ftype(self) -> FTYPE:
@@ -862,6 +864,7 @@ class MACPayload(Field):
 
     def decompose(self):
         self.fhdr = self.data_list
+        self.fhdr.decompose()
         fhdr_size = len(self.fhdr.data)
         if fhdr_size > len(self.data):
             self.fport = int.from_bytes(
@@ -995,8 +998,10 @@ class PHYPayload(Field):
 
     def decompose(self):
         self.mhdr = self.data_list[0:1]
+        self.mhdr.decompose()
         self.macpayload = self.data_list[1:-4]
-        self.mic = int.from_bytes(self.data[-4:], byteorder='big')
+        self.macpayload.decompose()
+        self.mic = self.data_list[-4:]
 
     @property
     def mhdr(self) -> MHDR:
@@ -1026,12 +1031,12 @@ class PHYPayload(Field):
             raise TypeError
 
     @property
-    def mic(self) -> int:
+    def mic(self) -> list:
         return self.__mic
 
     @mic.setter
     def mic(self, mic):
-        if isinstance(mic, int):
+        if isinstance(mic, list):
             self.__mic = mic
         else:
             raise TypeError
@@ -1046,6 +1051,7 @@ class LoRaPacket(Field):
 
     def decompose(self):
         self.phypayload = self.data_list
+        self.phypayload.decompose()
 
     @property
     def phypayload(self, phypayload) -> PHYPayload:
