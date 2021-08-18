@@ -9,6 +9,7 @@ class Field:
         self.__default_value = None
         self.__size = None
         self.__data = None
+        self.__data_list = None
 
         self.data = data
 
@@ -29,6 +30,10 @@ class Field:
             self.__data = data
         else:
             raise TypeError
+
+    @property
+    def data_list(self) -> list:
+        return [byte for byte in self.data]
 
 
 class MACCommand(Field):
