@@ -979,8 +979,100 @@ class JoinAccept(Field):
         self.__netid = None
         self.__devaddr = None
         self.__dlsettings = None
+        self.__rx1droffset = None
+        self.__rx2datarate = None
         self.__rxdelay = None
         self.__cflist = None
+
+        self.decompose()
+
+    def decompose(self):
+        self.joinnonce = self.data_list[0:3]
+        self.netid = self.data_list[3:6]
+        self.devaddr = self.data_list[6:10]
+        self.dlsettings = int.from_bytes(self.data[10:11], byteorder='big')
+        self.rxdelay = int.from_bytes(self.data[11:12], byteorder='big')
+
+    @property
+    def joinnonce(self) -> list:
+        return self.__joinnonce
+
+    @joinnonce.setter
+    def joinnonce(self, joinnonce):
+        if isinstance(joinnonce, list):
+            self.__joinnonce = joinnonce
+        else:
+            raise TypeError
+
+    @property
+    def netid(self) -> list:
+        return self.__netid
+
+    @netid.setter
+    def netid(self, netid):
+        if isinstance(netid, list):
+            self.__netid = netid
+        else:
+            raise TypeError
+
+    @property
+    def devaddr(self) -> list:
+        return self.__devaddr
+
+    @devaddr.setter
+    def devaddr(self, devaddr):
+        if isinstance(devaddr, list):
+            self.__devaddr = devaddr
+        else:
+            raise TypeError
+
+    @property
+    def rx1droffset(self) -> int:
+        return self.__rx1droffset
+
+    @rx1droffset.setter
+    def rx1droffset(self, rx1droffset):
+        if isinstance(rx1droffset, int):
+            self.__rx1droffset = rx1droffset
+        else:
+            raise TypeError
+
+    @property
+    def rx2datarate(self) -> DR:
+        return self.__rx2datarate
+
+    @rx2datarate.setter
+    def rx2datarate(self, rx2datarate):
+        if isinstance(rx2datarate, int):
+            self.__rx2datarate = DR(rx2datarate)
+        elif isinstance(rx2datarate, DR):
+            self.__rx2datarate = rx2datarate
+        else:
+            raise TypeError
+
+    @property
+    def dlsettings(self) -> int:
+        return self.__dlsettings
+
+    @dlsettings.setter
+    def dlsettings(self, dlsettings):
+        if isinstance(dlsettings, int):
+            self.__dlsettings = dlsettings
+            self.rx1droffset = (dlsettings & 0b01110000) >> 4
+            self.rx2datarate = (dlsettings & 0b00001111)
+        else:
+            raise TypeError
+
+    @property
+    def rxdelay(self) -> int:
+        return self.__rxdelay
+
+    @rxdelay.setter
+    def rxdelay(self, rxdelay):
+        if isinstance(rxdelay, int):
+            self.__rxdelay = rxdelay
+        else:
+            raise TypeError
 
 
 class MHDR(Field):
