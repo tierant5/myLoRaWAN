@@ -806,6 +806,11 @@ class MHDR(Field):
         self.__ftype = None
         self.__major = None
 
+    def decompose(self):
+        data = int.from_bytes(self.data, byteorder='big')
+        self.ftype = (data & 0b11100000) >> 5
+        self.major = (data & 0b00000011)
+
     @property
     def ftype(self) -> FTYPE:
         return self.__ftype
@@ -814,6 +819,8 @@ class MHDR(Field):
     def ftype(self, ftype):
         if isinstance(ftype, FTYPE):
             self.__ftype = ftype
+        elif isinstance(ftype, int):
+            self.__ftype = FTYPE(ftype)
         else:
             raise TypeError
 
@@ -825,6 +832,8 @@ class MHDR(Field):
     def major(self, major):
         if isinstance(major, MAJOR):
             self.__major = major
+        elif isinstance(major, int):
+            self.__major = MAJOR(major)
         else:
             raise TypeError
 
@@ -838,13 +847,18 @@ class PHYPayload(Field):
         self.__macpayload = None
         self.__mic = None
 
+    def decompose(self):
+        self.mhdr = self.data_list[0:1]
+        self.macpayload = self.data_list[1:-4]
+        self.mic = int.from_bytes(self.data[-4:], byteorder='big')
+
     @property
     def mhdr(self) -> MHDR:
         return self.__mhdr
 
     @mhdr.setter
     def mhdr(self, mhdr):
-        if isinstance(mhdr, int):
+        if isinstance(mhdr, list):
             self.__mhdr = MHDR(mhdr)
         else:
             raise TypeError
@@ -855,7 +869,7 @@ class PHYPayload(Field):
 
     @macpayload.setter
     def macpayload(self, macpayload):
-        if isinstance(macpayload, int):
+        if isinstance(macpayload, list):
             if self.mhdr.ftype == FTYPE.JOINACCEPT:
                 self.__macpayload = JoinAccept(macpayload)
             elif self.mhdr.ftype == FTYPE.JOINREQUEST:
@@ -883,6 +897,9 @@ class LoRaPacket(Field):
     def __init__(self, *args):
         super(LoRaPacket, self).__init__(*args)
         self.__phypayload = None
+
+    def decompose(self):
+        self.phypayload = self.data_list
 
     @property
     def phypayload(self, phypayload) -> PHYPayload:
