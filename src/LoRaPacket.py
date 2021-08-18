@@ -646,6 +646,20 @@ class TXParamSetupAns(MACCommand):
         super(TXParamSetupAns, self).__init__(*args)
 
 
+class DeviceTimeReq(MACCommand):
+    """ Define an End-Device Time Request MAC Command. """
+
+    def __init__(self, *args):
+        super(DeviceTimeReq, self).__init__(*args)
+
+
+class DeviceTimeAns(MACCommand):
+    """ Define an End-Device Time Answer MAC Command. """
+
+    def __init__(self, *args):
+        super(DeviceTimeAns, self).__init__(*args)
+
+
 class FOpts:
     """ Define a Frame Options Class. """
 
