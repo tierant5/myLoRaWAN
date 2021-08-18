@@ -60,6 +60,8 @@ class MACCommand:
                 data.bit_length() + 7 // 8,
                 byteorder='big'
             )
+        elif isinstance(data, list):
+            self.__data = bytes(data)
         else:
             raise TypeError
 
