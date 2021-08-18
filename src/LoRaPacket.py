@@ -590,7 +590,35 @@ class RXTimingSetupReq(MACCommand):
     def __init__(self, *args):
         super(RXTimingSetupReq, self).__init__(*args)
         self.__rxtimingsettings = None
-        self.__del = None
+        self.__delay = None
+
+        self.decompose()
+
+    def decompose(self):
+        self.rxtimingsettings = int.from_bytes(self.data[0:1], byteorder='big')
+
+    @property
+    def delay(self) -> int:
+        return self.__delay
+
+    @delay.setter
+    def delay(self, delay):
+        if isinstance(delay, int):
+            self.__delay = delay
+        else:
+            raise TypeError
+
+    @property
+    def rxtimingsettings(self) -> int:
+        return self.__rxtimingsettings
+
+    @rxtimingsettings.setter
+    def rxtimingsettings(self, rxtimingsettings):
+        if isinstance(rxtimingsettings, int):
+            self.__rxtimingsettings = rxtimingsettings
+            self.delay = (rxtimingsettings & 0b00001111)
+        else:
+            raise TypeError
 
 
 class RXTimingSetupAns(MACCommand):
