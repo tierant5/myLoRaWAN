@@ -57,7 +57,7 @@ class MACCommand:
     def data(self, data):
         if isinstance(data, int):
             self.__data = data.to_bytes(
-                data.bit_length() + 7 // 8,
+                (data.bit_length() + 7) // 8,
                 byteorder='big'
             )
         elif isinstance(data, list):
@@ -488,11 +488,59 @@ class DevStatusReq(MACCommand):
 class DevStatusAns(MACCommand):
     """ Define an End-Device Status Answer MAC Command. """
 
-    def __init__(self, *args):
+    def __init__(self, snr, battery=0, *args):
         super(DevStatusAns, self).__init__(*args)
         self.__battery = None
         self.__radiostatus = None
         self.__snr = None
+
+        self.battery = battery
+        self.snr = snr
+
+        self.compose()
+
+    def compose(self):
+        self.radiostatus = self.snr
+        self.data = (self.battery << 8) | self.radiostatus
+
+    @property
+    def battery(self) -> int:
+        return self.__battery
+
+    @battery.setter
+    def battery(self, battery):
+        if isinstance(battery, int):
+            if battery < 256:
+                self.__battery = battery
+            else:
+                raise ValueError
+        else:
+            raise TypeError
+
+    @property
+    def snr(self) -> int:
+        return self.__snr
+
+    @snr.setter
+    def snr(self, snr):
+        if isinstance(snr, int):
+            if (snr >= -32) and (snr <= 31):
+                self.__snr = snr & (2 ** 6 - 1)
+            else:
+                raise ValueError
+        else:
+            raise TypeError
+
+    @property
+    def radiostatus(self) -> int:
+        return self.__radiostatus
+
+    @radiostatus.setter
+    def radiostatus(self, radiostatus):
+        if isinstance(radiostatus, int):
+            self.__radiostatus = radiostatus
+        else:
+            raise TypeError
 
 
 class NewChannelReq(MACCommand):
