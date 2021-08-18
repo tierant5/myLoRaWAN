@@ -410,12 +410,72 @@ class RXParamSetupReq(MACCommand):
 class RXParamSetupAns(MACCommand):
     """ Define a Recieve Windows Parameters Ansswer MAC Command. """
 
-    def __init__(self, *args):
+    def __init__(
+            self, rx1droffsetack=False, rx2datarateack=False,
+            channelack=False, *args
+            ):
         super(RXParamSetupAns, self).__init__(*args)
         self.__status = None
         self.__rx1droffsetack = None
         self.__rx2datarateack = None
         self.__channelack = None
+
+        self.rx1droffsetack = rx1droffsetack
+        self.rx2datarateack = rx2datarateack
+        self.channelack = channelack
+
+        self.compose()
+
+    def compose(self):
+        status = int(self.rx1droffsetack) << 2
+        status = status | int(self.rx2datarateack) << 1
+        status = status | int(self.channelack)
+        self.status = status
+        self.data = self.status
+
+    @property
+    def status(self) -> int:
+        return self.__status
+
+    @status.setter
+    def status(self, status):
+        if isinstance(status, int):
+            self.__status = status
+        else:
+            raise TypeError
+
+    @property
+    def rx1droffsetack(self) -> bool:
+        return self.__rx1droffsetack
+
+    @rx1droffsetack.setter
+    def rx1droffsetack(self, rx1droffsetack):
+        if isinstance(rx1droffsetack, bool):
+            self.__rx1droffsetack = rx1droffsetack
+        else:
+            raise TypeError
+
+    @property
+    def rx2datarateack(self) -> bool:
+        return self.__rx2datarateack
+
+    @rx2datarateack.setter
+    def rx2datarateack(self, rx2datarateack):
+        if isinstance(rx2datarateack, bool):
+            self.__rx2datarateack = rx2datarateack
+        else:
+            raise TypeError
+
+    @property
+    def channelack(self) -> bool:
+        return self.__channelack
+
+    @channelack.setter
+    def channelack(self, channelack):
+        if isinstance(channelack, bool):
+            self.__channelack = channelack
+        else:
+            raise TypeError
 
 
 class DevStatusReq(MACCommand):
