@@ -648,19 +648,21 @@ class DeviceTimeAns(MACCommand):
         super(DeviceTimeAns, self).__init__(*args)
 
 
-class FOpts:
+class FOpts(Field):
     """ Define a Frame Options Class. """
 
-    def __init__(self, fopts, ftype):
+    def __init__(self, fopts, ftype, *args):
+        super(FOpts, self).__init__(*args)
         self.__fopts = None
         self.__ftype = None
         self.__mac_commands = []
 
 
-class FCtrl:
+class FCtrl(Field):
     """ Define a base FCtrl Class"""
 
-    def __init__(self):
+    def __init__(self, *args):
+        super(FCtrl, self).__init__(*args)
         self.__adr = None
         self.__ack = None
         self.__foptslen = None
@@ -669,24 +671,25 @@ class FCtrl:
 class FCtrl_Downlink(FCtrl):
     """ Define a FHDR Frame Control for Downlinks. """
 
-    def __init__(self):
-        super(FCtrl_Downlink, self).__init__()
+    def __init__(self, *args):
+        super(FCtrl_Downlink, self).__init__(*args)
         self.__fpending = None
 
 
 class FCtrl_Uplink(FCtrl):
     """ Define a FHDR Frame Control for Uplinks. """
 
-    def __init__(self):
-        super(FCtrl_Uplink, self).__init__()
+    def __init__(self, *args):
+        super(FCtrl_Uplink, self).__init__(*args)
         self.__adrackreq = None
         self.__classb = None
 
 
-class FHDR:
+class FHDR(Field):
     """ Define a MACPayload Frame Header. """
 
-    def __init__(self):
+    def __init__(self, *args):
+        super(FHDR, self).__init__(*args)
         self.__ftype = None
         self.__devaddr = None
         self.__fctrl = None
@@ -736,10 +739,11 @@ class FHDR:
             raise TypeError
 
 
-class MACPayload:
+class MACPayload(Field):
     """ Define a LoRaWAN MACPayload Frame. """
 
-    def __init__(self):
+    def __init__(self, *args):
+        super(MACPayload, self).__init__(*args)
         self.__ftype = None
         self.__fhdr = None
         self.__fport = None
@@ -789,10 +793,11 @@ class JoinAccept(MACPayload):
         self.__cflist = None
 
 
-class MHDR:
+class MHDR(Field):
     """ Define a MAC Frame Header. """
 
-    def __init__(self):
+    def __init__(self, *args):
+        super(MHDR, self).__init__(*args)
         self.__ftype = None
         self.__major = None
 
@@ -819,10 +824,11 @@ class MHDR:
             raise TypeError
 
 
-class PHYPayload:
+class PHYPayload(Field):
     """ Define a LoRaWAN Physical Payload. """
 
-    def __init__(self):
+    def __init__(self, *args):
+        super(PHYPayload, self).__init__(*args)
         self.__mhdr = None
         self.__macpayload = None
         self.__mic = None
@@ -866,10 +872,11 @@ class PHYPayload:
             raise TypeError
 
 
-class LoRaPacket:
+class LoRaPacket(Field):
     """ Define a LoRa Packet. """
 
     def __init__(self, *args):
+        super(LoRaPacket, self).__init__(*args)
         self.__phypayload = None
 
     @property
