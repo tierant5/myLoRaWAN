@@ -34,9 +34,11 @@ class Field:
 class MACCommand(Field):
     """ Define a MAC Command. """
 
-    def __init__(self, *args):
+    def __init__(self, cid, *args):
         super(MACCommand, self).__init__(*args)
         self.__cid = None
+
+        self.cid = cid
 
     @property
     def cid(self) -> CID:
