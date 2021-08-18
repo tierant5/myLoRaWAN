@@ -666,11 +666,62 @@ class FOpts(Field):
 class FCtrl(Field):
     """ Define a base FCtrl Class"""
 
-    def __init__(self, *args):
+    def __init__(self, ack, *args):
         super(FCtrl, self).__init__(*args)
         self.__adr = None
         self.__ack = None
         self.__foptslen = None
+
+        self.ack = ack
+
+    def decompose(self):
+        data = int.from_bytes(self.data, byteorder='big')
+        self.adr = (data & 0b10000000) >> 7
+        self.ack = (data & 0b00100000) >> 5
+        self.foptslen = (data & 0b00001111)
+
+    @property
+    def adr(self) -> bool:
+        return self.__adr
+
+    @adr.setter
+    def adr(self, adr):
+        if isinstance(adr, bool):
+            self.__adr = adr
+        elif isinstance(adr, int):
+            if adr == 0:
+                self.__adr = False
+            else:
+                self.__adr = True
+        else:
+            raise TypeError
+
+    @property
+    def ack(self) -> bool:
+        return self.__ack
+
+    @ack.setter
+    def ack(self, ack):
+        if isinstance(ack, bool):
+            self.__ack = ack
+        elif isinstance(ack, int):
+            if ack == 0:
+                self.__ack = False
+            else:
+                self.__ack = True
+        else:
+            raise TypeError
+
+    @property
+    def foptslen(self) -> int:
+        return self.__foptslen
+
+    @foptslen.setter
+    def foptslen(self, foptslen):
+        if isinstance(foptslen, int):
+            self.__foptslen = foptslen
+        else:
+            raise TypeError
 
 
 class FCtrl_Downlink(FCtrl):
@@ -679,6 +730,27 @@ class FCtrl_Downlink(FCtrl):
     def __init__(self, *args):
         super(FCtrl_Downlink, self).__init__(*args)
         self.__fpending = None
+
+    def decompose(self):
+        super(FCtrl_Downlink, self).decompose()
+        data = int.from_bytes(self.data, byteorder='big')
+        self.fpending = (data & 0b00010000) >> 4
+
+    @property
+    def fpending(self) -> bool:
+        return self.__fpending
+
+    @fpending.setter
+    def fpending(self, fpending):
+        if isinstance(fpending, bool):
+            self.__fpending = fpending
+        elif isinstance(fpending, int):
+            if fpending == 0:
+                self.__fpending = False
+            else:
+                self.__fpending = True
+        else:
+            raise TypeError
 
 
 class FCtrl_Uplink(FCtrl):
@@ -693,13 +765,23 @@ class FCtrl_Uplink(FCtrl):
 class FHDR(Field):
     """ Define a MACPayload Frame Header. """
 
-    def __init__(self, *args):
+    def __init__(self, ftype, *args):
         super(FHDR, self).__init__(*args)
         self.__ftype = None
         self.__devaddr = None
         self.__fctrl = None
         self.__fcnt = None
         self.__fopts = None
+
+        self.ftype = ftype
+
+    def decompose(self):
+        self.devaddr = self.data_list[:4]
+        self.fctrl = self.data_list[4:5]
+        self.fcnt = int.from_bytes(self.data[5:7], byteorder='big')
+        self.data = self.data_list[:7 + self.fcnt.foptslen]
+        if self.fctrl.foptslen != 0:
+            self.fopts = self.data_list[-self.fctrl.foptslen:]
 
     @property
     def ftype(self) -> FTYPE:
@@ -718,15 +800,15 @@ class FHDR(Field):
 
     @fctrl.setter
     def fctrl(self, fctrl):
-        if isinstance(fctrl, int):
+        if isinstance(fctrl, list):
             if self.ftype == FTYPE.UNCONFDATAUP:
-                self.__fctrl = FCtrl_Uplink(fctrl, ack=False)
+                self.__fctrl = FCtrl_Uplink(False, fctrl)
             elif self.ftype == FTYPE.CONFDATAUP:
-                self.__fctrl = FCtrl_Uplink(fctrl, ack=True)
+                self.__fctrl = FCtrl_Uplink(True, fctrl)
             if self.ftype == FTYPE.UNCONFDATADOWN:
-                self.__fctrl = FCtrl_Downlink(fctrl, ack=False)
+                self.__fctrl = FCtrl_Downlink(False, fctrl)
             elif self.ftype == FTYPE.CONFDATADOWN:
-                self.__fctrl = FCtrl_Downlink(fctrl, ack=True)
+                self.__fctrl = FCtrl_Downlink(True, fctrl)
             else:
                 raise ValueError
         else:
@@ -743,16 +825,53 @@ class FHDR(Field):
         else:
             raise TypeError
 
+    @property
+    def devaddr(self) -> list:
+        return self.__devaddr
+
+    @devaddr.setter
+    def devaddr(self, devaddr):
+        if isinstance(devaddr, list):
+            self.__devaddr = devaddr
+        else:
+            raise TypeError
+
+    @property
+    def fcnt(self) -> int:
+        return self.__fcnt
+
+    @fcnt.setter
+    def fcnt(self, fcnt):
+        if isinstance(fcnt, int):
+            self.__fcnt = fcnt
+        else:
+            raise TypeError
+
 
 class MACPayload(Field):
     """ Define a LoRaWAN MACPayload Frame. """
 
-    def __init__(self, *args):
+    def __init__(self, ftype, *args):
         super(MACPayload, self).__init__(*args)
         self.__ftype = None
         self.__fhdr = None
         self.__fport = None
         self.__frmpayload = None
+
+        self.ftype = ftype
+
+    def decompose(self):
+        self.fhdr = self.data_list
+        fhdr_size = len(self.fhdr.data)
+        if fhdr_size > len(self.data):
+            self.fport = int.from_bytes(
+                self.data[fhdr_size:fhdr_size + 1],
+                byteorder='big'
+            )
+            self.frmpayload = int.from_bytes(
+                self.data[fhdr_size + 1:],
+                byteorder='big'
+            )
 
     @property
     def ftype(self) -> FTYPE:
@@ -771,8 +890,33 @@ class MACPayload(Field):
 
     @fhdr.setter
     def fhdr(self, fhdr):
-        if isinstance(fhdr, int):
-            self.__fhdr = FHDR(fhdr, self.ftype)
+        if isinstance(fhdr, list):
+            self.__fhdr = FHDR(self.ftype, fhdr)
+        else:
+            raise TypeError
+
+    @property
+    def fport(self) -> int:
+        return self.__fport
+
+    @fport.setter
+    def fport(self, fport):
+        if isinstance(fport, int):
+            self.__fport = fport
+        else:
+            raise TypeError
+
+    @property
+    def frmpayload(self) -> list:
+        return self.__frmpayload
+
+    @frmpayload.setter
+    def frmpayload(self, frmpayload):
+        if isinstance(frmpayload, list):
+            if len(frmpayload) != 0:
+                self.__frmpayload = frmpayload
+            else:
+                self.__frmpayload = None
         else:
             raise TypeError
 
@@ -877,7 +1021,7 @@ class PHYPayload(Field):
             elif self.mhdr.ftype == FTYPE.JOINREQUEST:
                 self.__macpayload = JoinRequest(macpayload)
             else:
-                self.__macpayload = MACPayload(macpayload, self.mhdr.ftype)
+                self.__macpayload = MACPayload(self.mhdr.ftype, macpayload)
         else:
             raise TypeError
 
