@@ -8,46 +8,7 @@ class Field:
         self.__name = None
         self.__default_value = None
         self.__size = None
-
-
-class BitField(Field):
-    """ Define a Bit Field. """
-
-    def __init__(self):
-        super(Field, self).__init__()
-
-
-class RFU:
-    """ Define a Reserved for Future Use Field. """
-
-
-class Frame:
-    """ Define a generic frame. """
-
-
-class Header:
-    """ Define a generic header. """
-
-
-class MACCommand:
-    """ Define a MAC Command. """
-
-    def __init__(self):
-        self.__cid = None
         self.__data = None
-
-    @property
-    def cid(self) -> CID:
-        return self.__cid
-
-    @cid.setter
-    def cid(self, cid):
-        if isinstance(cid, int):
-            self.__cid = CID(cid)
-        elif isinstance(cid, CID):
-            self.__cid = cid
-        else:
-            raise TypeError
 
     @property
     def data(self) -> bytes:
@@ -62,6 +23,27 @@ class MACCommand:
             )
         elif isinstance(data, list):
             self.__data = bytes(data)
+        else:
+            raise TypeError
+
+
+class MACCommand(Field):
+    """ Define a MAC Command. """
+
+    def __init__(self, *args):
+        super(MACCommand, self).__init__(*args)
+        self.__cid = None
+
+    @property
+    def cid(self) -> CID:
+        return self.__cid
+
+    @cid.setter
+    def cid(self, cid):
+        if isinstance(cid, int):
+            self.__cid = CID(cid)
+        elif isinstance(cid, CID):
+            self.__cid = cid
         else:
             raise TypeError
 
