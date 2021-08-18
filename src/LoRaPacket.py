@@ -777,19 +777,21 @@ class MACPayload(Field):
             raise TypeError
 
 
-class JoinRequest(MACPayload):
+class JoinRequest(Field):
     """ Define a LoRaWAN Join-Request Payload. """
 
-    def __init__(self):
+    def __init__(self, *args):
+        super(JoinRequest, self).__init__(*args)
         self.__joineui = None
         self.__deveui = None
         self.__devnonce = None
 
 
-class JoinAccept(MACPayload):
+class JoinAccept(Field):
     """ Define a LoRaWAN Join-Accept Payload. """
 
-    def __init__(self):
+    def __init__(self, *args):
+        super(JoinAccept, self).__init__(*args)
         self.__joinnonce = None
         self.__netid = None
         self.__devaddr = None
