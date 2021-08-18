@@ -933,6 +933,42 @@ class JoinRequest(Field):
         self.__deveui = None
         self.__devnonce = None
 
+    def compose(self):
+        self.data = self.joineui + self.deveui + self.devnonce
+
+    @property
+    def joineui(self) -> list:
+        return self.__joineui
+
+    @joineui.setter
+    def joineui(self, joineui):
+        if isinstance(joineui, list):
+            self.__joineui = joineui
+        else:
+            raise TypeError
+
+    @property
+    def deveui(self) -> list:
+        return self.__deveui
+
+    @deveui.setter
+    def deveui(self, deveui):
+        if isinstance(deveui, list):
+            self.__deveui = deveui
+        else:
+            raise TypeError
+
+    @property
+    def devnonce(self) -> list:
+        return self.__devnonce
+
+    @devnonce.setter
+    def devnonce(self, devnonce):
+        if isinstance(devnonce, list):
+            self.__devnonce = devnonce
+        else:
+            raise TypeError
+
 
 class JoinAccept(Field):
     """ Define a LoRaWAN Join-Accept Payload. """
