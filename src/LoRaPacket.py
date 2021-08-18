@@ -4,11 +4,13 @@ from constants import FTYPE, CID, MAJOR, DR, TXPOWER, CHMASK
 class Field:
     """ Define a generic field. """
 
-    def __init__(self, name: str):
+    def __init__(self, data=None):
         self.__name = None
         self.__default_value = None
         self.__size = None
         self.__data = None
+
+        self.data = data
 
     @property
     def data(self) -> bytes:
@@ -23,6 +25,8 @@ class Field:
             )
         elif isinstance(data, list):
             self.__data = bytes(data)
+        elif data is None:
+            self.__data = data
         else:
             raise TypeError
 
@@ -242,7 +246,7 @@ class LinkADRAns(MACCommand):
             raise TypeError
 
     @property
-    def powerack(self, powerack) -> bool:
+    def powerack(self) -> bool:
         return self.__powerack
 
     @powerack.setter
@@ -253,7 +257,7 @@ class LinkADRAns(MACCommand):
             raise TypeError
 
     @property
-    def datarateack(self, datarateack) -> bool:
+    def datarateack(self) -> bool:
         return self.__datarateack
 
     @datarateack.setter
@@ -264,7 +268,7 @@ class LinkADRAns(MACCommand):
             raise TypeError
 
     @property
-    def channelmaskack(self, channelmaskack) -> bool:
+    def channelmaskack(self) -> bool:
         return self.__channelmaskack
 
     @channelmaskack.setter
