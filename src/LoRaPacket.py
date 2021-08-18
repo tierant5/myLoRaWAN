@@ -349,6 +349,63 @@ class RXParamSetupReq(MACCommand):
         self.__rx1droffset = None
         self.__rx2datarate = None
 
+        self.decompose()
+
+    def decompose(self):
+        if self.data is not None:
+            self.dlsettings = int.from_bytes(self.data[0:1], byteorder='big')
+            self.frequency = int.from_bytes(self.data[1:4], byteorder='big')
+        else:
+            raise ValueError
+
+    @property
+    def rx1droffset(self) -> int:
+        return self.__rx1droffset
+
+    @rx1droffset.setter
+    def rx1droffset(self, rx1droffset):
+        if isinstance(rx1droffset, int):
+            self.__rx1droffset = rx1droffset
+        else:
+            raise TypeError
+
+    @property
+    def rx2datarate(self) -> DR:
+        return self.__rx2datarate
+
+    @rx2datarate.setter
+    def rx2datarate(self, rx2datarate):
+        if isinstance(rx2datarate, int):
+            self.__rx2datarate = DR(rx2datarate)
+        elif isinstance(rx2datarate, DR):
+            self.__rx2datarate = rx2datarate
+        else:
+            raise TypeError
+
+    @property
+    def dlsettings(self) -> int:
+        return self.__dlsettings
+
+    @dlsettings.setter
+    def dlsettings(self, dlsettings):
+        if isinstance(dlsettings, int):
+            self.__dlsettings = dlsettings
+            self.rx1droffset = (dlsettings & 0b01110000) >> 4
+            self.rx2datarate = (dlsettings & 0b00001111)
+        else:
+            raise TypeError
+
+    @property
+    def frequency(self) -> int:
+        return self.__frequency
+
+    @frequency.setter
+    def frequency(self, frequency):
+        if isinstance(frequency, int):
+            self.__frequency = frequency
+        else:
+            raise TypeError
+
 
 class RXParamSetupAns(MACCommand):
     """ Define a Recieve Windows Parameters Ansswer MAC Command. """
