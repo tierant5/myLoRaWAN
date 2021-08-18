@@ -42,7 +42,6 @@ class MACCommand(Field):
     def __init__(self, cid, *args):
         super(MACCommand, self).__init__(*args)
         self.__cid = None
-        self.__mac_size = None
 
         self.cid = cid
 
@@ -56,17 +55,6 @@ class MACCommand(Field):
             self.__cid = CID(cid)
         elif isinstance(cid, CID):
             self.__cid = cid
-        else:
-            raise TypeError
-
-    @property
-    def mac_size(self) -> int:
-        return self.__mac_size
-
-    @mac_size.setter
-    def mac_size(self, mac_size):
-        if isinstance(mac_size, int):
-            self.__mac_size = mac_size
         else:
             raise TypeError
 
