@@ -1319,6 +1319,13 @@ class PHYPayload(Field):
         self.macpayload.decompose()
         self.mic = self.data_list[-4:]
 
+    def compose(self):
+        self.mhdr.compose()
+        data = self.mhdr.data_list
+        self.macpayload.compose()
+        data = data + self.macpayload.data_list
+        data = data + self.mic
+
     @property
     def mhdr(self) -> MHDR:
         return self.__mhdr
@@ -1369,8 +1376,12 @@ class LoRaPacket(Field):
         self.phypayload = self.data_list
         self.phypayload.decompose()
 
+    def compose(self):
+        self.phypayload.compose()
+        self.data = self.phypayload.data_list
+
     @property
-    def phypayload(self, phypayload) -> PHYPayload:
+    def phypayload(self) -> PHYPayload:
         return self.__phypayload
 
     @phypayload.setter
