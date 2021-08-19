@@ -1386,7 +1386,7 @@ class LoRaPacket(Field):
 
     @phypayload.setter
     def phypayload(self, phypayload):
-        if isinstance(phypayload, int):
+        if isinstance(phypayload, list):
             self.__phypayload = PHYPayload(phypayload)
         else:
             raise TypeError
