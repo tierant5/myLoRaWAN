@@ -776,6 +776,12 @@ class FCtrl(Field):
         self.ack = (data & 0b00100000) >> 5
         self.foptslen = (data & 0b00001111)
 
+    def compose(self):
+        data = int(self.adr) << 7
+        data = data | (int(self.ack) << 5)
+        data = data | self.foptslen
+        self.data = data
+
     @property
     def adr(self) -> bool:
         return self.__adr
@@ -856,6 +862,34 @@ class FCtrl_Uplink(FCtrl):
         super(FCtrl_Uplink, self).__init__(*args)
         self.__adrackreq = None
         self.__classb = None
+
+    def compose(self):
+        super(FCtrl_Uplink, self).compose()
+        data = int(self.adrackreq) << 6
+        data = data | (int(self.classb) << 4)
+        self.data = int.from_bytes(self.data, byteorder='big') | data
+
+    @property
+    def adrackreq(self) -> bool:
+        return self.__adrackreq
+
+    @adrackreq.setter
+    def adrackreq(self, adrackreq):
+        if isinstance(adrackreq, bool):
+            self.__adrackreq = adrackreq
+        else:
+            raise TypeError
+
+    @property
+    def classb(self) -> bool:
+        return self.__classb
+
+    @classb.setter
+    def classb(self, classb):
+        if isinstance(classb, bool):
+            self.__classb = classb
+        else:
+            raise TypeError
 
 
 class FHDR(Field):
