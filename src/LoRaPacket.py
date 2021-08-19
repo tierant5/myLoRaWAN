@@ -704,6 +704,7 @@ class FOpts(Field):
         for command in self.mac_commands:
             command.compose()
             data = data + [command.cid.value] + command.data_list
+        self.data = data
 
     def get_mac_info(self, cid_byte):
         cid = CID(cid_byte)
