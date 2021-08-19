@@ -950,7 +950,7 @@ class FHDR(Field):
         data = self.devaddr
         self.fctrl.compose()
         data = data + self.fctrl.data_list
-        data = data + self.fcnt
+        data = data + [self.fcnt]
         if self.fctrl.foptslen != 0:
             self.fopts.compose()
             data = data + self.fopts.data_list
@@ -1046,6 +1046,18 @@ class MACPayload(Field):
                 self.data[fhdr_size + 1:],
                 byteorder='big'
             )
+
+    def compose(self):
+        self.fhdr.compose()
+        if self.fport == 0:
+            self.frmpayload = self.fhdr.fopts.data_list
+            self.fhdr.fctrl.foptslen = 0
+            self.fhdr.compose()
+        data = self.fhdr.data_list
+        if self.fport is not None:
+            data = data + [self.fport]
+            data = data + self.frmpayload
+        self.data = data
 
     @property
     def ftype(self) -> FTYPE:
