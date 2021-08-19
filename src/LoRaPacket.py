@@ -946,6 +946,16 @@ class FHDR(Field):
             self.fopts = self.data_list[-self.fctrl.foptslen:]
             self.fopts.decompose()
 
+    def compose(self):
+        data = self.devaddr
+        self.fctrl.compose()
+        data = data + self.fctrl.data_list
+        data = data + self.fcnt
+        if self.fctrl.foptslen != 0:
+            self.fopts.compose()
+            data = data + self.fopts.data_list
+        self.data = data
+
     @property
     def ftype(self) -> FTYPE:
         return self.__ftype
