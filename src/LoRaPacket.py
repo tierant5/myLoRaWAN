@@ -1,4 +1,5 @@
 from constants import FTYPE, CID, MAJOR, DR, TXPOWER, CHMASK
+from copy import deepcopy
 
 
 class Field:
@@ -659,12 +660,92 @@ class FOpts(Field):
     def __init__(self, ftype, *args):
         super(FOpts, self).__init__(*args)
         self.__ftype = None
-        self.__mac_commands = []
+        self.mac_commands = None
 
         self.ftype = ftype
 
     def decompose(self):
-        pass
+        self.mac_commands = []
+        mac_data = deepcopy(self.data_list)
+        while len(mac_data) != 0:
+            cid_byte = mac_data.pop(0)
+            size, cid, maccommand = self.get_mac_info(cid_byte=cid_byte)
+            cid_data = []
+            for i in range(0, size):
+                cid_data.append(mac_data.pop(0))
+            self.mac_commands.append(maccommand(cid, cid_data))
+
+    def get_mac_info(self, cid_byte):
+        cid = CID(cid_byte)
+        if self.ftype in [FTYPE.UNCONFDATADOWN, FTYPE.CONFDATADOWN]:
+            if cid == CID.LINKCHECK:
+                size = 2
+                maccommand = LinkCheckAns
+            elif cid == CID.LINKADR:
+                size = 4
+                maccommand = LinkADRReq
+            elif cid == CID.DUTYCYCLE:
+                size = 1
+                maccommand = DutyCycleReq
+            elif cid == CID.RXPARAMSETUP:
+                size = 4
+                maccommand = RXParamSetupReq
+            elif cid == CID.DEVSTATUS:
+                size = 0
+                maccommand = DevStatusReq
+            elif cid == CID.NEWCHANNEL:
+                size = 5
+                maccommand = NewChannelReq
+            elif cid == CID.RXTIMINGSETUP:
+                size = 1
+                maccommand = RXTimingSetupReq
+            elif cid == CID.TXPARAMSETUP:
+                size = 1
+                maccommand = TXParamSetupReq
+            elif cid == CID.DLCHANNEL:
+                size = 4
+                maccommand = DLChannelReq
+            elif cid == CID.DEVICETIME:
+                size = 5
+                maccommand = DevStatusAns
+            else:
+                raise ValueError(f'{cid} is not supported')
+        elif self.ftype in [FTYPE.UNCONFDATAUP, FTYPE.CONFDATAUP]:
+            if cid == CID.LINKCHECK:
+                size = 0
+                maccommand = LinkCheckReq
+            elif cid == CID.LINKADR:
+                size = 1
+                maccommand = LinkADRAns
+            elif cid == CID.DUTYCYCLE:
+                size = 0
+                maccommand = DutyCycleAns
+            elif cid == CID.RXPARAMSETUP:
+                size = 1
+                maccommand = RXParamSetupAns
+            elif cid == CID.DEVSTATUS:
+                size = 2
+                maccommand = DevStatusAns
+            elif cid == CID.NEWCHANNEL:
+                size = 1
+                maccommand = NewChannelAns
+            elif cid == CID.RXTIMINGSETUP:
+                size = 0
+                maccommand = RXTimingSetupAns
+            elif cid == CID.TXPARAMSETUP:
+                size = 0
+                maccommand = TXParamSetupAns
+            elif cid == CID.DLCHANNEL:
+                size = 1
+                maccommand = DLChannelAns
+            elif cid == CID.DEVICETIME:
+                size = 0
+                maccommand = DevStatusReq
+            else:
+                raise ValueError(f'{cid} is not supported')
+        else:
+            raise ValueError(f'{self.ftype} is not supported')
+        return size, cid, maccommand
 
     @property
     def ftype(self) -> FTYPE:
