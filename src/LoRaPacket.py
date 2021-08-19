@@ -40,11 +40,9 @@ class Field:
 class MACCommand(Field):
     """ Define a MAC Command. """
 
-    def __init__(self, cid, *args):
+    def __init__(self, *args):
         super(MACCommand, self).__init__(*args)
         self.__cid = None
-
-        self.cid = cid
 
     @property
     def cid(self) -> CID:
@@ -65,6 +63,7 @@ class LinkCheckReq(MACCommand):
 
     def __init__(self, *args):
         super(LinkCheckReq, self).__init__(*args)
+        self.cid = CID.LINKCHECK
 
 
 class LinkCheckAns(MACCommand):
@@ -74,6 +73,7 @@ class LinkCheckAns(MACCommand):
         super(LinkCheckAns, self).__init__(*args)
         self.__margin = None
         self.__gwcnt = None
+        self.cid = CID.LINKCHECK
         self.decompose()
 
     def decompose(self):
@@ -118,6 +118,7 @@ class LinkADRReq(MACCommand):
         self.__redundancy = None
         self.__chmaskcntl = None
         self.__nbtrans = None
+        self.cid = CID.LINKADR
         self.decompose()
 
     def decompose(self):
@@ -229,6 +230,7 @@ class LinkADRAns(MACCommand):
         self.__datarateack = None
         self.__channelmaskack = None
 
+        self.cid = CID.LINKADR
         self.powerack = powerack
         self.datarateack = datarateack
         self.channelmaskack = channelmaskack
@@ -295,6 +297,7 @@ class DutyCycleReq(MACCommand):
         self.__dutycyclepl = None
         self.__maxdutycycle = None
 
+        self.cid = CID.DUTYCYCLE
         self.maxdutycycle = maxdutycycle
 
         self.compose()
@@ -331,6 +334,7 @@ class DutyCycleAns(MACCommand):
 
     def __init__(self, *args):
         super(DutyCycleAns, self).__init__(*args)
+        self.cid = CID.DUTYCYCLE
 
 
 class RXParamSetupReq(MACCommand):
@@ -343,6 +347,7 @@ class RXParamSetupReq(MACCommand):
         self.__rx1droffset = None
         self.__rx2datarate = None
 
+        self.cid = CID.RXPARAMSETUP
         self.decompose()
 
     def decompose(self):
@@ -414,6 +419,7 @@ class RXParamSetupAns(MACCommand):
         self.__rx2datarateack = None
         self.__channelack = None
 
+        self.cid = CID.RXPARAMSETUP
         self.rx1droffsetack = rx1droffsetack
         self.rx2datarateack = rx2datarateack
         self.channelack = channelack
@@ -477,6 +483,7 @@ class DevStatusReq(MACCommand):
 
     def __init__(self, *args):
         super(DevStatusReq, self).__init__(*args)
+        self.cid = CID.DEVSTATUS
 
 
 class DevStatusAns(MACCommand):
@@ -488,6 +495,7 @@ class DevStatusAns(MACCommand):
         self.__radiostatus = None
         self.__snr = None
 
+        self.cid = CID.DEVSTATUS
         self.battery = battery
         self.snr = snr
 
@@ -548,6 +556,8 @@ class NewChannelReq(MACCommand):
         self.__maxdr = None
         self.__mindr = None
 
+        self.cid = CID.NEWCHANNEL
+
 
 class NewChannelAns(MACCommand):
     """ Define a Creation of a Channel Answer MAC Command. """
@@ -558,6 +568,8 @@ class NewChannelAns(MACCommand):
         self.__datarate_range_ok = None
         self.__channel_frequency_ok = None
 
+        self.cid = CID.NEWCHANNEL
+
 
 class DLChannelReq(MACCommand):
     """ Define a Modification of a Channel Request MAC Command. """
@@ -566,6 +578,8 @@ class DLChannelReq(MACCommand):
         super(DLChannelReq, self).__init__(*args)
         self.__chindex = None
         self.__frequency = None
+
+        self.cid = CID.DLCHANNEL
 
 
 class DLChannelAns(MACCommand):
@@ -577,6 +591,8 @@ class DLChannelAns(MACCommand):
         self.__uplink_frequency_exists = None
         self.__channel_frequency_ok = None
 
+        self.cid = CID.DLCHANNEL
+
 
 class RXTimingSetupReq(MACCommand):
     """ Define a Setting Delay between TX and RX Request MAC Command. """
@@ -586,6 +602,7 @@ class RXTimingSetupReq(MACCommand):
         self.__rxtimingsettings = None
         self.__delay = None
 
+        self.cid = CID.RXTIMINGSETUP
         self.decompose()
 
     def decompose(self):
@@ -620,6 +637,7 @@ class RXTimingSetupAns(MACCommand):
 
     def __init__(self, *args):
         super(RXTimingSetupAns, self).__init__(*args)
+        self.cid = CID.RXTIMINGSETUP
 
 
 class TXParamSetupReq(MACCommand):
@@ -632,6 +650,8 @@ class TXParamSetupReq(MACCommand):
         self.__uplinkdwelltime = None
         self.__maxeirp = None
 
+        self.cid = CID.TXPARAMSETUP
+
 
 class TXParamSetupAns(MACCommand):
     """ Define an End-Device Transmit Parameters Answer MAC Command. """
@@ -639,12 +659,15 @@ class TXParamSetupAns(MACCommand):
     def __init__(self, *args):
         super(TXParamSetupAns, self).__init__(*args)
 
+        self.cid = CID.TXPARAMSETUP
+
 
 class DeviceTimeReq(MACCommand):
     """ Define an End-Device Time Request MAC Command. """
 
     def __init__(self, *args):
         super(DeviceTimeReq, self).__init__(*args)
+        self.cid = CID.DEVICETIME
 
 
 class DeviceTimeAns(MACCommand):
@@ -652,6 +675,7 @@ class DeviceTimeAns(MACCommand):
 
     def __init__(self, *args):
         super(DeviceTimeAns, self).__init__(*args)
+        self.cid = CID.DEVICETIME
 
 
 class FOpts(Field):
@@ -669,11 +693,17 @@ class FOpts(Field):
         mac_data = deepcopy(self.data_list)
         while len(mac_data) != 0:
             cid_byte = mac_data.pop(0)
-            size, cid, maccommand = self.get_mac_info(cid_byte=cid_byte)
+            size, maccommand = self.get_mac_info(cid_byte=cid_byte)
             cid_data = []
             for i in range(0, size):
                 cid_data.append(mac_data.pop(0))
-            self.mac_commands.append(maccommand(cid, cid_data))
+            self.mac_commands.append(maccommand(cid_data))
+
+    def compose(self):
+        data = []
+        for command in self.mac_commands:
+            command.compose()
+            data = data + [command.cid.value] + command.data_list
 
     def get_mac_info(self, cid_byte):
         cid = CID(cid_byte)
@@ -745,7 +775,7 @@ class FOpts(Field):
                 raise ValueError(f'{cid} is not supported')
         else:
             raise ValueError(f'{self.ftype} is not supported')
-        return size, cid, maccommand
+        return size, maccommand
 
     @property
     def ftype(self) -> FTYPE:
