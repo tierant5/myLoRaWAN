@@ -940,8 +940,8 @@ class FHDR(Field):
         self.devaddr = self.data_list[:4]
         self.fctrl = self.data_list[4:5]
         self.fctrl.decompose()
-        self.fcnt = int.from_bytes(self.data[5:7], byteorder='big')
-        self.data = self.data_list[:7 + self.fcnt.foptslen]
+        self.fcnt = int.from_bytes(self.data[5:7], byteorder='little')
+        self.data = self.data_list[:7 + self.fctrl.foptslen]
         if self.fctrl.foptslen != 0:
             self.fopts = self.data_list[-self.fctrl.foptslen:]
             self.fopts.decompose()
