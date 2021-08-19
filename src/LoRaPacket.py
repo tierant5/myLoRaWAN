@@ -1271,6 +1271,11 @@ class MHDR(Field):
         self.ftype = (data & 0b11100000) >> 5
         self.major = (data & 0b00000011)
 
+    def compose(self):
+        data = (self.ftype.value & 0b111) << 5
+        data = data | (self.major.value & 0b11)
+        self.data = data
+
     @property
     def ftype(self) -> FTYPE:
         return self.__ftype
