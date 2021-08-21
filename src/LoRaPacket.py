@@ -1166,8 +1166,6 @@ class JoinAccept(Field):
         self.__rxdelay = None
         self.__cflist = None
 
-        self.decompose()
-
     def decompose(self):
         self.joinnonce = self.data_list[0:3]
         self.netid = self.data_list[3:6]
