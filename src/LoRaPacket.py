@@ -1415,6 +1415,7 @@ class PHYPayload(Field):
         data = self.mhdr.data_list
         self.macpayload.compose(keys)
         data = data + self.macpayload.data_list
+        self.mic = self.macpayload.calculate_mic(keys, self.mhdr)
         data = data + self.mic
 
     @property
