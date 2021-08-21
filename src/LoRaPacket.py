@@ -1210,6 +1210,14 @@ class JoinRequest(Field):
     def compose(self, keys):
         self.data = self.joineui + self.deveui + self.devnonce
 
+    def calculate_mic(self, keys, mhdr):
+        mic = mhdr.data_list
+        mic += self.data_list
+
+        cmac = AES_CMAC()
+        computed_mic = cmac.encode(bytes(keys.appkey), bytes(mic))[:4]
+        return list(map(int, computed_mic))
+
     @property
     def joineui(self) -> list:
         return self.__joineui
@@ -1257,13 +1265,40 @@ class JoinAccept(Field):
         self.__rx2datarate = None
         self.__rxdelay = None
         self.__cflist = None
+        self.__decrypted_payload = None
 
-    def decompose(self, keys):
-        self.joinnonce = self.data_list[0:3]
-        self.netid = self.data_list[3:6]
-        self.devaddr = self.data_list[6:10]
-        self.dlsettings = int.from_bytes(self.data[10:11], byteorder='big')
-        self.rxdelay = int.from_bytes(self.data[11:12], byteorder='big')
+    def decompose(self, keys, mic):
+        self.decrypt_payload(keys, mic)
+        self.joinnonce = self.decrypted_payload[0:3]
+        self.netid = self.decrypted_payload[3:6]
+        self.devaddr = self.decrypted_payload[6:10]
+        self.dlsettings = int.from_bytes(
+            bytes(self.decrypted_payload[10:11]), byteorder='big'
+        )
+        self.rxdelay = int.from_bytes(
+            bytes(self.decrypted_payload[11:12]), byteorder='big'
+        )
+        self.cflist = self.decrypted_payload[13:]
+
+    def decrypt_payload(self, keys, mic):
+        a = self.data_list
+        a += mic
+
+        cipher = AES.new(bytes(keys.appkey))
+        self.decrypted_payload = cipher.encrypt(bytes(a))[:-4]
+
+    def calculate_mic(self, keys, mhdr):
+        mic = mhdr.data_list
+        mic += self.joinnonce
+        mic += self.netid
+        mic += self.devaddr
+        mic += [self.dlsettings]
+        mic += [self.rxdelay]
+        mic += self.cflist
+
+        cmac = AES_CMAC()
+        computed_mic = cmac.encode(bytes(keys.appkey), bytes(mic))[:4]
+        return list(map(int, computed_mic))
 
     @property
     def joinnonce(self) -> list:
@@ -1346,6 +1381,31 @@ class JoinAccept(Field):
         else:
             raise TypeError
 
+    @property
+    def cflist(self) -> list:
+        return self.__cflist
+
+    @cflist.setter
+    def cflist(self, cflist):
+        if isinstance(cflist, list):
+            self.__cflist = cflist
+        else:
+            raise TypeError
+
+    @property
+    def decrypted_payload(self) -> list:
+        return self.__decrypted_payload
+
+    @decrypted_payload.setter
+    def decrypted_payload(self, decrypted_payload):
+        if isinstance(decrypted_payload, list):
+            if len(decrypted_payload) != 0:
+                self.__decrypted_payload = decrypted_payload
+            else:
+                self.__decrypted_payload = None
+        else:
+            raise TypeError
+
 
 class MHDR(Field):
     """ Define a MAC Frame Header. """
@@ -1405,8 +1465,11 @@ class PHYPayload(Field):
         self.mhdr = self.data_list[0:1]
         self.mhdr.decompose()
         self.macpayload = self.data_list[1:-4]
-        self.macpayload.decompose(keys)
         self.mic = self.data_list[-4:]
+        if isinstance(self.macpayload, JoinAccept):
+            self.macpayload.decompose(keys, self.mic)
+        else:
+            self.macpayload.decompose(keys)
         if self.mic != self.macpayload.calculate_mic(keys, self.mhdr):
             raise ValueError
 
