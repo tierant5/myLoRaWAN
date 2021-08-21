@@ -1049,9 +1049,9 @@ class MACPayload(Field):
                 byteorder='big'
             )
             self.frmpayload = [byte for byte in self.data[(fhdr_size + 1):]]
-            self.decrypt(keys)
+            self.decrypt_payload(keys)
 
-    def decrypt(self, keys):
+    def encryption(self, keys):
         if self.frmpayload is not None:
             if self.fport == 0:
                 key = keys.nwskey
@@ -1088,9 +1088,12 @@ class MACPayload(Field):
             payload = []
             for i in range(len(self.frmpayload)):
                 payload += [s[i] ^ padded_payload[i]]
-            self.decrypted_payload = list(map(int, payload))
+            return list(map(int, payload))
 
-    def compose(self):
+    def decrypt_payload(self, keys):
+        self.decrypted_payload = self.encryption(keys)
+
+    def compose(self, keys):
         self.fhdr.compose()
         if self.fport == 0:
             self.frmpayload = self.fhdr.fopts.data_list
@@ -1099,8 +1102,14 @@ class MACPayload(Field):
         data = self.fhdr.data_list
         if self.fport is not None:
             data = data + [self.fport]
+            self.encrypt_payload(keys)
             data = data + self.frmpayload
         self.data = data
+
+    def encrypt_payload(self, keys):
+        if self.decrypted_payload is not None:
+            self.frmpayload = self.decrypted_payload
+            self.frmpayload = self.encryption(keys)
 
     @property
     def ftype(self) -> FTYPE:
@@ -1374,10 +1383,10 @@ class PHYPayload(Field):
         self.macpayload.decompose(keys)
         self.mic = self.data_list[-4:]
 
-    def compose(self):
+    def compose(self, keys):
         self.mhdr.compose()
         data = self.mhdr.data_list
-        self.macpayload.compose()
+        self.macpayload.compose(keys)
         data = data + self.macpayload.data_list
         data = data + self.mic
 
@@ -1431,8 +1440,8 @@ class LoRaPacket(Field):
         self.phypayload = self.data_list
         self.phypayload.decompose(keys)
 
-    def compose(self):
-        self.phypayload.compose()
+    def compose(self, keys):
+        self.phypayload.compose(keys)
         self.data = self.phypayload.data_list
 
     @property
