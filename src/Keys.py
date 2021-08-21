@@ -77,6 +77,16 @@ class Keys:
             self.__devnonce = [randrange(256), randrange(256)]
         return self.__devnonce
 
+    @devnonce.setter
+    def devnonce(self, devnonce):
+        if isinstance(devnonce, list):
+            if len(devnonce) == 2:
+                self.__devnonce = devnonce
+            else:
+                raise ValueError
+        else:
+            raise TypeError
+
     def increment_devnonce(self):
         old_devnonce = int.from_bytes(
             bytes(self.devnonce), byteorder='big'
