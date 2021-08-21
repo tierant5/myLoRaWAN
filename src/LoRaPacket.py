@@ -937,7 +937,7 @@ class FHDR(Field):
         self.ftype = ftype
 
     def decompose(self):
-        self.devaddr = self.data_list[:4]
+        self.devaddr = list(reversed(self.data_list[:4]))
         self.fctrl = self.data_list[4:5]
         self.fctrl.decompose()
         self.fcnt = int.from_bytes(self.data[5:7], byteorder='little')
@@ -947,10 +947,12 @@ class FHDR(Field):
             self.fopts.decompose()
 
     def compose(self):
-        data = self.devaddr
+        data = list(reversed(self.devaddr))
         self.fctrl.compose()
         data = data + self.fctrl.data_list
-        data = data + [self.fcnt]
+        data = data + [
+            byte for byte in self.fcnt.to_bytes(2, byteorder='little')
+        ]
         if self.fctrl.foptslen != 0:
             self.fopts.compose()
             data = data + self.fopts.data_list
@@ -1037,15 +1039,12 @@ class MACPayload(Field):
         self.fhdr = self.data_list
         self.fhdr.decompose()
         fhdr_size = len(self.fhdr.data)
-        if fhdr_size > len(self.data):
+        if fhdr_size < len(self.data):
             self.fport = int.from_bytes(
-                self.data[fhdr_size:fhdr_size + 1],
+                self.data[fhdr_size:(fhdr_size + 1)],
                 byteorder='big'
             )
-            self.frmpayload = int.from_bytes(
-                self.data[fhdr_size + 1:],
-                byteorder='big'
-            )
+            self.frmpayload = [byte for byte in self.data[(fhdr_size + 1):]]
 
     def compose(self):
         self.fhdr.compose()
