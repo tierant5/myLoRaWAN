@@ -117,7 +117,6 @@ class LoRaMAC:
 
     def decompose_all_region_defaults(self, json_data):
         self.rx_delay1 = json_data[KEYS.RECEIVE_DELAY1.value]
-        self.rx_delay2 = json_data[KEYS.RECEIVE_DELAY2.value]
         self.join_accept_delay1 = json_data[KEYS.JOIN_ACCEPT_DELAY1.value]
         self.join_accept_delay2 = json_data[KEYS.JOIN_ACCEPT_DELAY2.value]
         self.max_fcnt_gap = json_data[KEYS.MAX_FCNT_GAP.value]
@@ -264,6 +263,7 @@ class LoRaMAC:
     def rx_delay1(self, rx_delay1: int):
         if isinstance(rx_delay1, int):
             self.__rx_delay1 = rx_delay1
+            self.rx_delay2 = rx_delay1 + 1
         else:
             raise TypeError
 
