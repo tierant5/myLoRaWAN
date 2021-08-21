@@ -9,7 +9,7 @@ class Keys:
         self.__nwkskey = None
         self.__appskey = None
         self.__devnonce = None
-        self.__appeui = None
+        self.__joineui = None
         self.__deveui = None
         self.__appkey = None
 
@@ -20,8 +20,8 @@ class Keys:
                 self.nwkskey = value
             elif key == 'appskey':
                 self.appskey = value
-            elif key == 'appeui':
-                self.appeui = value
+            elif key == 'joineui':
+                self.joineui = value
             elif key == 'deveui':
                 self.deveui = value
             elif key == 'appkey':
@@ -87,14 +87,14 @@ class Keys:
         ]
 
     @property
-    def appeui(self) -> list:
-        return self.__appeui
+    def joineui(self) -> list:
+        return self.__joineui
 
-    @appeui.setter
-    def appeui(self, appeui):
-        if isinstance(appeui, list):
-            if len(appeui) == 8:
-                self.__appeui = appeui
+    @joineui.setter
+    def joineui(self, joineui):
+        if isinstance(joineui, list):
+            if len(joineui) == 8:
+                self.__joineui = joineui
             else:
                 raise ValueError
         else:
