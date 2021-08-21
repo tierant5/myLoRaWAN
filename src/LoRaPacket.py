@@ -1070,10 +1070,10 @@ class MACPayload(Field):
                 a += [direction]
                 a += list(reversed(self.fhdr.devaddr))
                 a += [
-                    byte for byte in self.fhdr.fcnt.to_bytes(2, byteorder='little')    # noqa: E501
+                    byte for byte in self.fhdr.fcnt.to_bytes(4, byteorder='little')    # noqa: E501
                 ]
-                a += [0x00]     # fcnt 32bit
-                a += [0x00]     # fcnt 32bit
+                # a += [0x00]     # fcnt 32bit
+                # a += [0x00]     # fcnt 32bit
                 a += [0x00]
                 a += [i+1]
 
