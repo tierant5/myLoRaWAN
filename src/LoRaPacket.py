@@ -1111,6 +1111,31 @@ class MACPayload(Field):
             self.frmpayload = self.decrypted_payload
             self.frmpayload = self.encryption(keys)
 
+    def calculate_mic(self, keys, mhdr):
+        if self.ftype in [FTYPE.UNCONFDATADOWN, FTYPE.CONFDATADOWN]:
+            direction = 0x01
+        else:
+            direction = 0x00
+
+        msg = mhdr.data_list + self.fhdr.data_list
+        if self.fport is not None:
+            msg += [self.fport] + self.frmpayload
+
+        mic = [0x49]
+        mic += [0x00, 0x00, 0x00, 0x00]
+        mic += [direction]
+        mic += list(reversed(self.fhdr.devaddr))
+        mic += [
+            byte for byte in self.fhdr.fcnt.to_bytes(4, byteorder='little')    # noqa: E501
+        ]
+        mic += [0x00]
+        mic += [len(msg)]
+        mic += msg
+
+        cmac = AES_CMAC()
+        computed_mic = cmac.encode(bytes(keys.nwkskey), bytes(mic))[:4]
+        return list(map(int, computed_mic))
+
     @property
     def ftype(self) -> FTYPE:
         return self.__ftype
@@ -1182,7 +1207,7 @@ class JoinRequest(Field):
         self.__deveui = None
         self.__devnonce = None
 
-    def compose(self):
+    def compose(self, keys):
         self.data = self.joineui + self.deveui + self.devnonce
 
     @property
@@ -1382,6 +1407,8 @@ class PHYPayload(Field):
         self.macpayload = self.data_list[1:-4]
         self.macpayload.decompose(keys)
         self.mic = self.data_list[-4:]
+        if self.mic != self.macpayload.calculate_mic(keys, self.mhdr):
+            raise ValueError
 
     def compose(self, keys):
         self.mhdr.compose()
