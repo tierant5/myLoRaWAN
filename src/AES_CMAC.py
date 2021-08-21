@@ -4,9 +4,9 @@ from struct import pack, unpack
 
 class AES_CMAC:
     def gen_subkey(self, K):
-        AES_128 = AES.new(K)
+        AES_128 = AES.new(K, AES.MODE_ECB)
 
-        L = AES_128.encrypt('\x00'*16)
+        L = AES_128.encrypt(('\x00'*16).encode())
 
         LHigh = unpack('>Q', L[:8])[0]
         LLow = unpack('>Q', L[8:])[0]
