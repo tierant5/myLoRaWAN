@@ -1,5 +1,8 @@
 from constants import FTYPE, CID, MAJOR, DR, TXPOWER, CHMASK
+from AES_CMAC import AES_CMAC
+from Crypto.Cipher import AES
 from copy import deepcopy
+import math
 
 
 class Field:
@@ -1032,6 +1035,7 @@ class MACPayload(Field):
         self.__fhdr = None
         self.__fport = None
         self.__frmpayload = None
+        self.__decrypted_payload = None
 
         self.ftype = ftype
 
@@ -1045,6 +1049,46 @@ class MACPayload(Field):
                 byteorder='big'
             )
             self.frmpayload = [byte for byte in self.data[(fhdr_size + 1):]]
+            self.decrypt(keys)
+
+    def decrypt(self, keys):
+        if self.frmpayload is not None:
+            if self.fport == 0:
+                key = keys.nwskey
+            else:
+                key = keys.appskey
+            if self.ftype in [FTYPE.UNCONFDATADOWN, FTYPE.CONFDATADOWN]:
+                direction = 0x01
+            else:
+                direction = 0x00
+            k = int(math.ceil(len(self.frmpayload) / 16.0))
+
+            a = []
+            for i in range(k):
+                a += [0x01]
+                a += [0x00, 0x00, 0x00, 0x00]
+                a += [direction]
+                a += list(reversed(self.fhdr.devaddr))
+                a += [
+                    byte for byte in self.fhdr.fcnt.to_bytes(2, byteorder='little')    # noqa: E501
+                ]
+                a += [0x00]     # fcnt 32bit
+                a += [0x00]     # fcnt 32bit
+                a += [0x00]
+                a += [i+1]
+
+            cipher = AES.new(bytes(key), AES.MODE_ECB)
+            s = cipher.encrypt(bytes(a))
+
+            padded_payload = []
+            for i in range(k):
+                idx = (i + 1) * 16
+                padded_payload += (self.frmpayload[idx - 16:idx] + ([0x00] * 16))[:16]     # noqa: E501
+
+            payload = []
+            for i in range(len(self.frmpayload)):
+                payload += [s[i] ^ padded_payload[i]]
+            self.decrypted_payload = list(map(int, payload))
 
     def compose(self):
         self.fhdr.compose()
@@ -1102,6 +1146,20 @@ class MACPayload(Field):
                 self.__frmpayload = frmpayload
             else:
                 self.__frmpayload = None
+        else:
+            raise TypeError
+
+    @property
+    def decrypted_payload(self) -> list:
+        return self.__decrypted_payload
+
+    @decrypted_payload.setter
+    def decrypted_payload(self, decrypted_payload):
+        if isinstance(decrypted_payload, list):
+            if len(decrypted_payload) != 0:
+                self.__decrypted_payload = decrypted_payload
+            else:
+                self.__decrypted_payload = None
         else:
             raise TypeError
 
