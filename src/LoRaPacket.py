@@ -1208,6 +1208,7 @@ class JoinRequest(Field):
         self.__devnonce = None
 
     def compose(self, keys):
+        self.devnonce = keys.devnonce
         self.data = self.joineui + self.deveui + self.devnonce
 
     def calculate_mic(self, keys, mhdr):
