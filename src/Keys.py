@@ -75,15 +75,16 @@ class Keys:
     def devnonce(self) -> list:
         if self.__devnonce is None:
             self.__devnonce = [randrange(256), randrange(256)]
-        else:
-            old_devnonce = int.from_bytes(
-                bytes(self.__devnonce), byteorder='big'
-            )
-            new_devnonce = old_devnonce + 1
-            self.__devnonce = [
-                byte for byte in new_devnonce.to_bytes(2, byteorder='big')
-            ]
         return self.__devnonce
+
+    def increment_devnonce(self):
+        old_devnonce = int.from_bytes(
+            bytes(self.devnonce), byteorder='big'
+        )
+        new_devnonce = old_devnonce + 1
+        self.__devnonce = [
+            byte for byte in new_devnonce.to_bytes(2, byteorder='big')
+        ]
 
     @property
     def appeui(self) -> list:

@@ -1272,7 +1272,7 @@ class JoinAccept(Field):
         self.decrypt_payload(keys, mic)
         self.joinnonce = self.decrypted_payload[0:3]
         self.netid = self.decrypted_payload[3:6]
-        self.devaddr = self.decrypted_payload[6:10]
+        self.devaddr = list(reversed(self.decrypted_payload[6:10]))
         self.dlsettings = int.from_bytes(
             bytes(self.decrypted_payload[10:11]), byteorder='big'
         )
@@ -1280,19 +1280,20 @@ class JoinAccept(Field):
             bytes(self.decrypted_payload[11:12]), byteorder='big'
         )
         self.cflist = self.decrypted_payload[13:]
+        self.set_keys(keys)
 
     def decrypt_payload(self, keys, mic):
         a = self.data_list
         a += mic
 
-        cipher = AES.new(bytes(keys.appkey))
+        cipher = AES.new(bytes(keys.appkey), AES.MODE_ECB)
         self.decrypted_payload = cipher.encrypt(bytes(a))[:-4]
 
     def calculate_mic(self, keys, mhdr):
         mic = mhdr.data_list
         mic += self.joinnonce
         mic += self.netid
-        mic += self.devaddr
+        mic += list(reversed(self.devaddr))
         mic += [self.dlsettings]
         mic += [self.rxdelay]
         mic += self.cflist
@@ -1300,6 +1301,22 @@ class JoinAccept(Field):
         cmac = AES_CMAC()
         computed_mic = cmac.encode(bytes(keys.appkey), bytes(mic))[:4]
         return list(map(int, computed_mic))
+
+    def set_keys(self, keys):
+        keys.devaddr = self.devaddr
+        keys.nwkskey = self.derive_session_key(keys, 0x01)
+        keys.appskey = self.derive_session_key(keys, 0x02)
+        keys.increment_devnonce()
+
+    def derive_session_key(self, keys, session):
+        a = [session]
+        a += self.joinnonce
+        a += self.netid
+        a += keys.devnonce
+        a += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+
+        cipher = AES.new(bytes(keys.appkey))
+        return list(map(int, cipher.encrypt(bytes(a))))
 
     @property
     def joinnonce(self) -> list:
