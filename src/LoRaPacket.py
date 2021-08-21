@@ -1208,6 +1208,8 @@ class JoinRequest(Field):
         self.__devnonce = None
 
     def compose(self, keys):
+        self.joineui = keys.joineui
+        self.deveui = keys.deveui
         self.devnonce = keys.devnonce
         self.data = self.joineui + self.deveui + self.devnonce
 
