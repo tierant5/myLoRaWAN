@@ -998,8 +998,10 @@ class FHDR(Field):
 
     @fopts.setter
     def fopts(self, fopts):
-        if isinstance(fopts, int):
+        if isinstance(fopts, list):
             self.__fopts = FOpts(fopts, self.ftype)
+        elif isinstance(fopts, FOpts):
+            self.__fopts = fopts
         else:
             raise TypeError
 
@@ -1155,6 +1157,8 @@ class MACPayload(Field):
     def fhdr(self, fhdr):
         if isinstance(fhdr, list):
             self.__fhdr = FHDR(self.ftype, fhdr)
+        elif isinstance(fhdr, FHDR):
+            self.__fhdr = fhdr
         else:
             raise TypeError
 
@@ -1509,6 +1513,8 @@ class PHYPayload(Field):
     def mhdr(self, mhdr):
         if isinstance(mhdr, list):
             self.__mhdr = MHDR(mhdr)
+        elif isinstance(mhdr, MHDR):
+            self.__mhdr = mhdr
         else:
             raise TypeError
 
@@ -1525,6 +1531,8 @@ class PHYPayload(Field):
                 self.__macpayload = JoinRequest(macpayload)
             else:
                 self.__macpayload = MACPayload(self.mhdr.ftype, macpayload)
+        elif isinstance(macpayload, (MACPayload, JoinAccept, JoinRequest)):
+            self.__macpayload = macpayload
         else:
             raise TypeError
 
@@ -1563,5 +1571,7 @@ class LoRaPacket(Field):
     def phypayload(self, phypayload):
         if isinstance(phypayload, list):
             self.__phypayload = PHYPayload(phypayload)
+        elif isinstance(phypayload, PHYPayload):
+            self.__phypayload = phypayload
         else:
             raise TypeError
