@@ -1,4 +1,5 @@
 import Device
+import DeviceInfo
 from Keys import Keys
 from LoRaPacket import LoRaPacket
 from constants import ACTIVATION
@@ -16,6 +17,7 @@ class LoRaWAN(Device.ClassC):
         self.__tx_packet = None
 
         self.activation = activation
+        self.load_device_info()
 
     def on_rx_done(self):
         super(LoRaWAN, self).on_rx_done()
@@ -28,6 +30,16 @@ class LoRaWAN(Device.ClassC):
     def send_packet(self):
         self.tx_packet.compose(self.keys)
         self.tx(self.tx_packet.data_list)
+
+    def load_device_info(self):
+        if self.activation == ACTIVATION.OTAA:
+            self.keys.appkey = DeviceInfo.appkey
+            self.keys.joineui = DeviceInfo.joineui
+            self.keys.deveui = DeviceInfo.deveui
+        else:
+            self.keys.devaddr = DeviceInfo.devaddr
+            self.keys.nwkskey = DeviceInfo.nwkskey
+            self.keys.appskey = DeviceInfo.appskey
 
     @property
     def keys(self) -> Keys:
