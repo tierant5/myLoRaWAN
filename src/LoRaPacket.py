@@ -989,6 +989,8 @@ class FHDR(Field):
                 self.__fctrl = FCtrl_Downlink(True, fctrl)
             else:
                 raise ValueError
+        elif issubclass(fctrl, FCtrl):
+            self.__fctrl = fctrl
         else:
             raise TypeError
 
