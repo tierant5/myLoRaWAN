@@ -81,7 +81,7 @@ class LoRaWAN(Device.ClassC):
     @rx_packet.setter
     def rx_packet(self, rx_packet):
         if isinstance(rx_packet, LoRaPacket):
-            self.__packet = rx_packet
+            self.__rx_packet = rx_packet
         else:
             raise TypeError
 
@@ -92,6 +92,6 @@ class LoRaWAN(Device.ClassC):
     @tx_packet.setter
     def tx_packet(self, tx_packet):
         if isinstance(tx_packet, LoRaPacket):
-            self.__packet = tx_packet
+            self.__tx_packet = tx_packet
         else:
             raise TypeError
