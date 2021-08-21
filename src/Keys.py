@@ -79,8 +79,10 @@ class Keys:
             old_devnonce = int.from_bytes(
                 bytes(self.__devnonce), byteorder='big'
             )
-            new_devnonce = [byte for byte in bytes(old_devnonce + 1)]
-            self.__devnonce = new_devnonce[-2:]
+            new_devnonce = old_devnonce + 1
+            self.__devnonce = [
+                byte for byte in new_devnonce.to_bytes(2, byteorder='big')
+            ]
         return self.__devnonce
 
     @property
