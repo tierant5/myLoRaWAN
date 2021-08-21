@@ -1,7 +1,7 @@
 import Device
 import DeviceInfo
 from Keys import Keys
-from LoRaPacket import LoRaPacket
+import LoRaPacket
 from constants import ACTIVATION
 
 
@@ -21,7 +21,7 @@ class LoRaWAN(Device.ClassC):
 
     def on_rx_done(self):
         super(LoRaWAN, self).on_rx_done()
-        self.rx_packet = LoRaPacket(self.rx_payload)
+        self.rx_packet = LoRaPacket.LoRaPacket(self.rx_payload)
         self.rx_packet.decompose(self.keys)
 
     def on_tx_done(self):
@@ -75,23 +75,23 @@ class LoRaWAN(Device.ClassC):
             raise TypeError
 
     @property
-    def rx_packet(self) -> LoRaPacket:
+    def rx_packet(self) -> LoRaPacket.LoRaPacket:
         self.__rx_packet
 
     @rx_packet.setter
     def rx_packet(self, rx_packet):
-        if isinstance(rx_packet, LoRaPacket):
+        if isinstance(rx_packet, LoRaPacket.LoRaPacket):
             self.__rx_packet = rx_packet
         else:
             raise TypeError
 
     @property
-    def tx_packet(self) -> LoRaPacket:
+    def tx_packet(self) -> LoRaPacket.LoRaPacket:
         self.__tx_packet
 
     @tx_packet.setter
     def tx_packet(self, tx_packet):
-        if isinstance(tx_packet, LoRaPacket):
+        if isinstance(tx_packet, LoRaPacket.LoRaPacket):
             self.__tx_packet = tx_packet
         else:
             raise TypeError
