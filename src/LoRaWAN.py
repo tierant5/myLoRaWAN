@@ -2,21 +2,26 @@ import Device
 import DeviceInfo
 from Keys import Keys
 import LoRaPacket
-from constants import ACTIVATION
+from constants import ACTIVATION, MAJOR, FTYPE
 
 
 class LoRaWAN(Device.ClassC):
     """ Class to unify LoRaWAN Stack """
 
-    def __init__(self, activation=ACTIVATION.OTAA, *args):
+    def __init__(
+        self, activation=ACTIVATION.OTAA,
+        version=MAJOR.LORAWANR1, *args
+    ):
         super(LoRaWAN, self).__init__(*args)
         self.__keys = None
         self.__activation = None
         self.__fcnt = None
         self.__rx_packet = None
         self.__tx_packet = None
+        self.__version = None
 
         self.activation = activation
+        self.version = version
         self.load_device_info()
 
     def on_rx_done(self):
@@ -30,6 +35,18 @@ class LoRaWAN(Device.ClassC):
     def send_packet(self):
         self.tx_packet.compose(self.keys)
         self.tx(self.tx_packet.data_list)
+
+    def send_join_request(self):
+        mhdr = LoRaPacket.MHDR()
+        mhdr.ftype = FTYPE.JOINREQUEST
+        mhdr.major = self.version
+        phypayload = LoRaPacket.PHYPayload()
+        phypayload.mhdr = mhdr
+        packet = LoRaPacket.LoRaPacket()
+        packet.phypayload = phypayload
+        packet.compose(self.keys)
+        self.mac.rx_delay1 = self.mac.join_accept_delay1
+        self.tx(packet.data_list)
 
     def load_device_info(self):
         if self.activation == ACTIVATION.OTAA:
@@ -60,6 +77,17 @@ class LoRaWAN(Device.ClassC):
     def activation(self, activation):
         if isinstance(activation, ACTIVATION):
             self.__activation = activation
+        else:
+            raise TypeError
+
+    @property
+    def version(self) -> MAJOR:
+        return self.__version
+
+    @version.setter
+    def version(self, version):
+        if isinstance(version, MAJOR):
+            self.__version = version
         else:
             raise TypeError
 
