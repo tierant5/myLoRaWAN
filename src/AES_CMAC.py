@@ -43,7 +43,7 @@ class AES_CMAC:
         const_Bsize = 16
         const_Zero = b'\x00'*16
 
-        AES_128 = AES.new(K)
+        AES_128 = AES.new(K, AES.MODE_ECB)
         K1, K2 = self.gen_subkey(K)
         n = int(len(M)/const_Bsize)
 
