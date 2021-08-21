@@ -1035,7 +1035,7 @@ class MACPayload(Field):
 
         self.ftype = ftype
 
-    def decompose(self):
+    def decompose(self, keys):
         self.fhdr = self.data_list
         self.fhdr.decompose()
         fhdr_size = len(self.fhdr.data)
@@ -1166,7 +1166,7 @@ class JoinAccept(Field):
         self.__rxdelay = None
         self.__cflist = None
 
-    def decompose(self):
+    def decompose(self, keys):
         self.joinnonce = self.data_list[0:3]
         self.netid = self.data_list[3:6]
         self.devaddr = self.data_list[6:10]
@@ -1309,11 +1309,11 @@ class PHYPayload(Field):
         self.__macpayload = None
         self.__mic = None
 
-    def decompose(self):
+    def decompose(self, keys):
         self.mhdr = self.data_list[0:1]
         self.mhdr.decompose()
         self.macpayload = self.data_list[1:-4]
-        self.macpayload.decompose()
+        self.macpayload.decompose(keys)
         self.mic = self.data_list[-4:]
 
     def compose(self):
@@ -1369,9 +1369,9 @@ class LoRaPacket(Field):
         super(LoRaPacket, self).__init__(*args)
         self.__phypayload = None
 
-    def decompose(self):
+    def decompose(self, keys):
         self.phypayload = self.data_list
-        self.phypayload.decompose()
+        self.phypayload.decompose(keys)
 
     def compose(self):
         self.phypayload.compose()
