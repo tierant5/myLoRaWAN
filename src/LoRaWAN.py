@@ -110,35 +110,79 @@ class LoRaWAN(Device.ClassC):
 
     def decompose_mac_commands(self, commands):
         for command in commands:
+            uplink_command = None
             if isinstance(command, LoRaPacket.LinkCheckAns):
                 pass
             elif isinstance(command, LoRaPacket.LinkADRReq):
-                self.mac.tx_data_rate = command.datarate
-                self.mac.tx_power = command.txpower
-                # self.mac.chmask = command.chmask
-                # self.mac.chmaskcntl = command.chmaskcntl
+                powerack = True
+                datarateack = True
+                channelmaskack = True
+                try:
+                    self.mac.tx_data_rate = command.datarate
+                except ValueError:
+                    datarateack = False
+                try:
+                    self.mac.tx_power = command.txpower
+                except ValueError:
+                    powerack = False
+                try:
+                    # self.mac.chmask = command.chmask
+                    # self.mac.chmaskcntl = command.chmaskcntl
+                    pass
+                except ValueError:
+                    channelmaskack = False
                 self.mac.tx_retries = command.nbtrans
+                uplink_command = LoRaPacket.LinkADRAns(
+                    powerack=powerack,
+                    datarateack=datarateack,
+                    channelmaskack=channelmaskack
+                    )
             elif isinstance(command, LoRaPacket.DutyCycleReq):
                 self.mac.duty_cycle = command.maxdutycycle
+                uplink_command = LoRaPacket.DutyCycleAns()
             elif isinstance(command, LoRaPacket.RXParamSetupReq):
-                self.mac.rx1droffset = command.rx1droffset
-                self.mac.rx2_data_rate = command.rx2datarate
-                for channel in self.mac.band.channel_list:
-                    if channel.frequency == command.frequency:
-                        self.mac.rx2_channel = channel
-                        break
+                rx1droffsetack = True
+                rx2datarateack = True
+                channelack = True
+                try:
+                    self.mac.rx1droffset = command.rx1droffset
+                except ValueError:
+                    rx1droffsetack = False
+                try:
+                    self.mac.rx2_data_rate = command.rx2datarate
+                except ValueError:
+                    rx2datarateack = False
+                try:
+                    for channel in self.mac.band.channel_list:
+                        if channel.frequency == command.frequency:
+                            self.mac.rx2_channel = channel
+                            break
+                        channelack = False
+                except ValueError:
+                    channelack = False
+                uplink_command = LoRaPacket.RXParamSetupAns(
+                    rx1droffsetack=rx1droffsetack,
+                    rx2datarateack=rx2datarateack,
+                    channelack=channelack
+                )
             elif isinstance(command, LoRaPacket.DevStatusReq):
                 pass
             elif isinstance(command, LoRaPacket.NewChannelReq):
                 pass
             elif isinstance(command, LoRaPacket.DLChannelReq):
                 pass
-            elif isinstance(command, LoRaPacket.RXTimingSetupAns):
+            elif isinstance(command, LoRaPacket.RXTimingSetupReq):
                 self.mac.rx_delay1 = command.delay
+                uplink_command = LoRaPacket.RXTimingSetupAns()
             elif isinstance(command, LoRaPacket.TXParamSetupReq):
                 pass
             elif isinstance(command, LoRaPacket.DeviceTimeAns):
                 pass
+
+            if uplink_command is not None:
+                self.tx_packet.phypayload.macpayload.fhdr.fopts.mac_commands.append(    # noqa: E501
+                    uplink_command
+                )
 
     @property
     def keys(self) -> Keys:
