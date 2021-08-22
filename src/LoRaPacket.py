@@ -687,7 +687,7 @@ class FOpts(Field):
     def __init__(self, ftype, *args):
         super(FOpts, self).__init__(*args)
         self.__ftype = None
-        self.mac_commands = None
+        self.mac_commands = []
 
         self.ftype = ftype
 
