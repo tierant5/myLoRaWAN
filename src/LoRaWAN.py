@@ -23,6 +23,7 @@ class LoRaWAN(Device.ClassC):
 
         self.activation = activation
         self.version = version
+        self.fcnt = 0
         self.load_device_info()
 
     def on_rx_done(self):
