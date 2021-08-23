@@ -796,13 +796,11 @@ class FOpts(Field):
 class FCtrl(Field):
     """ Define a base FCtrl Class"""
 
-    def __init__(self, ack, *args):
+    def __init__(self, *args):
         super(FCtrl, self).__init__(*args)
         self.__adr = None
         self.__ack = None
         self.__foptslen = None
-
-        self.ack = ack
 
     def decompose(self):
         data = int.from_bytes(self.data, byteorder='big')
@@ -980,14 +978,10 @@ class FHDR(Field):
     @fctrl.setter
     def fctrl(self, fctrl):
         if isinstance(fctrl, list):
-            if self.ftype == FTYPE.UNCONFDATAUP:
-                self.__fctrl = FCtrl_Uplink(False, fctrl)
-            elif self.ftype == FTYPE.CONFDATAUP:
-                self.__fctrl = FCtrl_Uplink(True, fctrl)
-            if self.ftype == FTYPE.UNCONFDATADOWN:
-                self.__fctrl = FCtrl_Downlink(False, fctrl)
-            elif self.ftype == FTYPE.CONFDATADOWN:
-                self.__fctrl = FCtrl_Downlink(True, fctrl)
+            if self.ftype in [FTYPE.UNCONFDATAUP, FTYPE.CONFDATAUP]:
+                self.__fctrl = FCtrl_Uplink(fctrl)
+            elif self.ftype in [FTYPE.UNCONFDATADOWN, FTYPE.CONFDATADOWN]:
+                self.__fctrl = FCtrl_Downlink(fctrl)
             else:
                 raise ValueError
         elif issubclass(fctrl, FCtrl):
