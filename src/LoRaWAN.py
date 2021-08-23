@@ -88,8 +88,13 @@ class LoRaWAN(Device.ClassC):
         self.setup_tx_packet()
         macpayload = self.rx_packet.phypayload.macpayload
         if self.rx_packet.phypayload.mhdr.ftype == FTYPE.JOINACCEPT:
+            self.setup_tx_packet(ftype=FTYPE.CONFDATAUP, ack=True)
             self.decompose_join_accept(macpayload)
         elif self.rx_packet.phypayload.mhdr.ftype == FTYPE.UNCONFDATADOWN:
+            self.setup_tx_packet(ack=False)
+            self.decompose_data_down(macpayload)
+        elif self.rx_packet.phypayload.mhdr.ftype == FTYPE.CONFDATADOWN:
+            self.setup_tx_packet(ack=True)
             self.decompose_data_down(macpayload)
 
     def decompose_join_accept(self, macpayload):
@@ -98,7 +103,6 @@ class LoRaWAN(Device.ClassC):
         self.mac.rx1droffset = macpayload.rx1droffset
         self.mac.rx2_data_rate = macpayload.rx2datarate
         self.mac.rx_delay1 = macpayload.rxdelay
-        self.setup_tx_packet(FTYPE.CONFDATAUP)
 
     def decompose_data_down(self, macpayload):
         mac_commands = []
