@@ -103,6 +103,7 @@ class LoRaWAN(Device.ClassC):
         self.mac.rx1droffset = macpayload.rx1droffset
         self.mac.rx2_data_rate = macpayload.rx2datarate
         self.mac.rx_delay1 = macpayload.rxdelay
+        self.send_data_packet()
 
     def decompose_data_down(self, macpayload):
         mac_commands = []
