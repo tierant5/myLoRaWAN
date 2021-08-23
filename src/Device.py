@@ -22,6 +22,7 @@ class Device(LoRa):
         self.radio = radio
 
     def on_rx_done(self):
+        print(f'RX_DONE, RXMODE: {self.rx_mode.name}')
         if self.rx_mode in [RXMODE.RX1, RXMODE.RX2]:
             self.rx1_timeout = False
             self.rx2_timeout = False
@@ -32,6 +33,7 @@ class Device(LoRa):
         self.setup_rx_done()
 
     def on_rx_timeout(self):
+        print(f'RX_TIMEOUT, RXMODE: {self.rx_mode.name}')
         self.clear_irq_flags(RxTimeout=1)
         if self.rx_mode == RXMODE.RX1:
             self.rx1_timeout = True
