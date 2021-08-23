@@ -17,6 +17,7 @@ class Device(LoRa):
 
         self.delay1 = None
         self.delay2 = None
+        self.rx2_done = True
 
         self.mac = mac
         self.radio = radio
@@ -26,6 +27,7 @@ class Device(LoRa):
         if self.rx_mode in [RXMODE.RX1, RXMODE.RX2]:
             self.rx1_timeout = False
             self.rx2_timeout = False
+            self.rx2_done = True
             if (self.delay2 is not None) and (self.rx_mode == RXMODE.RX1):
                 self.delay2.cancel()
         self.clear_irq_flags(RxDone=1)
@@ -42,9 +44,11 @@ class Device(LoRa):
         else:
             self.rx1_timeout = True
             self.rx2_timeout = True
+            self.rx2_done = True
             self.setup_rx2_timeout()
 
     def on_tx_done(self):
+        self.rx2_done = False
         self.clear_irq_flags(TxDone=1)
         asyncio.run(self.async_start_rx_delays())
 
