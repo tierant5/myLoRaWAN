@@ -951,6 +951,7 @@ class FHDR(Field):
 
     def compose(self):
         data = list(reversed(self.devaddr))
+        self.fctrl.foptslen = len(self.fopts.data)
         self.fctrl.compose()
         data = data + self.fctrl.data_list
         data = data + [
