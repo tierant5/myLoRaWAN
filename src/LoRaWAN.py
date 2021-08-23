@@ -2,7 +2,7 @@ import Device
 import DeviceInfo
 from Keys import Keys
 import LoRaPacket
-from constants import ACTIVATION, MAJOR, FTYPE
+from constants import ACTIVATION, MAJOR, FTYPE, DEVCLASS
 
 
 class LoRaWAN(Device.ClassC):
@@ -37,7 +37,8 @@ class LoRaWAN(Device.ClassC):
         super(LoRaWAN, self).on_tx_done()
         self.fcnt += 1
 
-    def send_packet(self):
+    def send_data_packet(self):
+        self.tx_packet.phypayload.macpayload.fhdr.devaddr = self.keys.devaddr
         self.tx_packet.compose(self.keys)
         self.tx(self.tx_packet.data_list)
 
@@ -69,9 +70,13 @@ class LoRaWAN(Device.ClassC):
         self.tx_packet.phypayload.mhdr = LoRaPacket.MHDR()
         self.tx_packet.phypayload.macpayload = LoRaPacket.MACPayload(ftype)
         self.tx_packet.phypayload.macpayload.fhdr = LoRaPacket.FHDR(ftype)
-        self.tx_packet.phypayload.macpayload.fhdr.fctrl = LoRaPacket.FCtrl_Uplink()     # noqa: E501
+        self.tx_packet.phypayload.macpayload.fhdr.fctrl = LoRaPacket.FCtrl_Uplink(ack=ack)     # noqa: E501
         self.tx_packet.phypayload.macpayload.fhdr.fctrl.adr = self.adr
-        self.tx_packet.phypayload.macpayload.fhdr.fctrl.ack = ack
+        self.tx_packet.phypayload.macpayload.fhdr.fctrl.adrackreq = False
+        if self.device_class == DEVCLASS.CLASS_B:
+            self.tx_packet.phypayload.macpayload.fhdr.fctrl.classb = True
+        else:
+            self.tx_packet.phypayload.macpayload.fhdr.fctrl.classb = False
         self.tx_packet.phypayload.macpayload.fhdr.fcnt = self.fcnt
         self.tx_packet.phypayload.macpayload.fhdr.fopts = LoRaPacket.FOpts(ftype)   # noqa: E501
         self.tx_packet.phypayload.mhdr.major = self.version
