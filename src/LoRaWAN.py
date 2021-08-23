@@ -40,6 +40,7 @@ class LoRaWAN(Device.ClassC):
         self.tx(self.tx_packet.data_list)
 
     def send_join_request(self):
+        self.fcnt = 0
         mhdr = LoRaPacket.MHDR()
         mhdr.ftype = FTYPE.JOINREQUEST
         mhdr.major = self.version
@@ -87,7 +88,6 @@ class LoRaWAN(Device.ClassC):
         self.mac.rx1droffset = macpayload.rx1droffset
         self.mac.rx2_data_rate = macpayload.rx2datarate
         self.mac.rx_delay1 = macpayload.rxdelay
-        self.fcnt = 0
         self.setup_tx_packet(FTYPE.CONFDATAUP)
 
     def decompose_data_down(self, macpayload):
