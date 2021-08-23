@@ -951,6 +951,7 @@ class FHDR(Field):
 
     def compose(self):
         data = list(reversed(self.devaddr))
+        self.fopts.compose()
         self.fctrl.foptslen = len(self.fopts.data)
         self.fctrl.compose()
         data = data + self.fctrl.data_list
@@ -958,7 +959,6 @@ class FHDR(Field):
             byte for byte in self.fcnt.to_bytes(2, byteorder='little')
         ]
         if self.fctrl.foptslen != 0:
-            self.fopts.compose()
             data = data + self.fopts.data_list
         self.data = data
 
