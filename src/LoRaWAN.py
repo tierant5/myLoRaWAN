@@ -64,8 +64,8 @@ class LoRaWAN(Device.ClassC):
         self.tx_packet = LoRaPacket.LoRaPacket()
         self.tx_packet.phypayload = LoRaPacket.PHYPayload()
         self.tx_packet.phypayload.mhdr = LoRaPacket.MHDR()
-        self.tx_packet.phypayload.macpayload = LoRaPacket.MACPayload()
-        self.tx_packet.phypayload.macpayload.fhdr = LoRaPacket.FHDR()
+        self.tx_packet.phypayload.macpayload = LoRaPacket.MACPayload(ftype)
+        self.tx_packet.phypayload.macpayload.fhdr = LoRaPacket.FHDR(ftype)
         self.tx_packet.phypayload.macpayload.fhdr.fctrl = LoRaPacket.FCtrl_Uplink()     # noqa: E501
         self.tx_packet.phypayload.macpayload.fhdr.fcnt = self.fcnt
         self.tx_packet.phypayload.macpayload.fhdr.fopts = LoRaPacket.FOpts(ftype)   # noqa: E501
