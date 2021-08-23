@@ -10,7 +10,7 @@ class LoRaWAN(Device.ClassC):
 
     def __init__(
         self, activation=ACTIVATION.OTAA,
-        version=MAJOR.LORAWANR1, *args
+        version=MAJOR.LORAWANR1, adr=True, *args
     ):
         super(LoRaWAN, self).__init__(*args)
         self.__keys = None
@@ -20,10 +20,12 @@ class LoRaWAN(Device.ClassC):
         self.__tx_packet = None
         self.__version = None
         self.__rx_data = None
+        self.__adr = None
 
         self.activation = activation
         self.version = version
         self.fcnt = 0
+        self.adr = adr
         self.load_device_info()
 
     def on_rx_done(self):
@@ -40,7 +42,6 @@ class LoRaWAN(Device.ClassC):
         self.tx(self.tx_packet.data_list)
 
     def send_join_request(self):
-        self.fcnt = 0
         mhdr = LoRaPacket.MHDR()
         mhdr.ftype = FTYPE.JOINREQUEST
         mhdr.major = self.version
@@ -62,13 +63,15 @@ class LoRaWAN(Device.ClassC):
             self.keys.nwkskey = DeviceInfo.nwkskey
             self.keys.appskey = DeviceInfo.appskey
 
-    def setup_tx_packet(self, ftype=FTYPE.UNCONFDATAUP):
+    def setup_tx_packet(self, ftype=FTYPE.UNCONFDATAUP, ack=False):
         self.tx_packet = LoRaPacket.LoRaPacket()
         self.tx_packet.phypayload = LoRaPacket.PHYPayload()
         self.tx_packet.phypayload.mhdr = LoRaPacket.MHDR()
         self.tx_packet.phypayload.macpayload = LoRaPacket.MACPayload(ftype)
         self.tx_packet.phypayload.macpayload.fhdr = LoRaPacket.FHDR(ftype)
         self.tx_packet.phypayload.macpayload.fhdr.fctrl = LoRaPacket.FCtrl_Uplink()     # noqa: E501
+        self.tx_packet.phypayload.macpayload.fhdr.fctrl.adr = self.adr
+        self.tx_packet.phypayload.macpayload.fhdr.fctrl.ack = ack
         self.tx_packet.phypayload.macpayload.fhdr.fcnt = self.fcnt
         self.tx_packet.phypayload.macpayload.fhdr.fopts = LoRaPacket.FOpts(ftype)   # noqa: E501
         self.tx_packet.phypayload.mhdr.major = self.version
@@ -84,6 +87,7 @@ class LoRaWAN(Device.ClassC):
             self.decompose_data_down(macpayload)
 
     def decompose_join_accept(self, macpayload):
+        self.fcnt = 0
         self.mac.set_defaults(self.mac.band)
         self.mac.rx1droffset = macpayload.rx1droffset
         self.mac.rx2_data_rate = macpayload.rx2datarate
@@ -260,5 +264,21 @@ class LoRaWAN(Device.ClassC):
     def rx_data(self, rx_data):
         if isinstance(rx_data, list):
             self.__rx_data = rx_data
+        else:
+            raise TypeError
+
+    @property
+    def adr(self) -> bool:
+        return self.__adr
+
+    @adr.setter
+    def adr(self, adr):
+        if isinstance(adr, bool):
+            self.__adr = adr
+        elif isinstance(adr, int):
+            if adr == 0:
+                self.__adr = False
+            else:
+                self.__adr = True
         else:
             raise TypeError
