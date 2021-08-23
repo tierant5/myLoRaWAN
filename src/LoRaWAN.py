@@ -70,9 +70,10 @@ class LoRaWAN(Device.ClassC):
         self.tx_packet.phypayload.mhdr = LoRaPacket.MHDR()
         self.tx_packet.phypayload.macpayload = LoRaPacket.MACPayload(ftype)
         self.tx_packet.phypayload.macpayload.fhdr = LoRaPacket.FHDR(ftype)
-        self.tx_packet.phypayload.macpayload.fhdr.fctrl = LoRaPacket.FCtrl_Uplink(ack=ack)     # noqa: E501
+        self.tx_packet.phypayload.macpayload.fhdr.fctrl = LoRaPacket.FCtrl_Uplink()     # noqa: E501
         self.tx_packet.phypayload.macpayload.fhdr.fctrl.adr = self.adr
         self.tx_packet.phypayload.macpayload.fhdr.fctrl.adrackreq = False
+        self.tx_packet.phypayload.macpayload.fhdr.fctrl.ack = ack
         if self.device_class == DEVCLASS.CLASS_B:
             self.tx_packet.phypayload.macpayload.fhdr.fctrl.classb = True
         else:
